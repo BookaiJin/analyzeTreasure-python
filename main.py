@@ -65,12 +65,11 @@ def startAnaly(treasurePath):
                     if dayFile.startswith('focusPoint'):
                         dayUnzip.extract(dayFile, focuspointFilesPath)
 
-    gcRecordFolder.gcRecord.generateGclog(gcRecordFilesPath, gcFileFullName)
-    focusPoint.focusPoint.generateFocusPointFile(
-        focuspointFilesPath, focuspointFileFullName)
-
     unzipEndTime = time.time()
     print('unzip time:', (unzipEndTime - startTime) * 1000, 'ms')
+
+    gcRecordFolder.gcRecord.generateGclog(gcRecordFilesPath, gcFileFullName)
+    focusPoint.focusPoint.generateFocusPointFile(focuspointFilesPath, focuspointFileFullName)
 
     endTime = time.time()
     print('total time:', (endTime - startTime) * 1000, 'ms')
