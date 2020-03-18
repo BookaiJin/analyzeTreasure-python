@@ -18,6 +18,9 @@ import analyzeFileUtils.analyzeFileUtils
 
 
 def generateGclog(gclogPath, gclogFullName):
+    if os.path.exists(gclogFullName):
+        print(gclogFullName, ' - result gc log file already exist.')
+        return
     resultGcLogFile = open(gclogFullName, 'w')
     resultGcLogFileHeader = ['log', 'gcStartTime', 'node']
     resultGcLogFileWriter = csv.DictWriter(resultGcLogFile, resultGcLogFileHeader)
