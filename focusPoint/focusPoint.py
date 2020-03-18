@@ -19,6 +19,12 @@ import analyzeFileUtils.analyzeFileUtils
 
 
 def generateFocusPointFile(focusPointPath, focusPointFullName):
+    if not os.path.exists(focusPointPath):
+        print('这个版本的treas包没有FocusPoint表. fu*k u again')
+        return
+    if os.path.exists(focusPointFullName):
+        print(focusPointFullName, ' - result gc log file already exist.')
+        return
     resultFocusPointLogFile = open(focusPointFullName, 'w')
     resultFocusPointFileHeader = ['', 'id', 'time', 'username', 'source', 'text', 'title', 'body']
     resultFocusPointWriter = csv.DictWriter(resultFocusPointLogFile, resultFocusPointFileHeader)

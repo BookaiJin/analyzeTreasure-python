@@ -18,6 +18,9 @@ import analyzeFileUtils.analyzeFileUtils
 
 
 def generateGclog(gclogPath, gclogFullName):
+    if not os.path.exists(gclogPath):
+        print('这个版本的treas包没有gcRecord表. fu*k u')
+        return
     if os.path.exists(gclogFullName):
         print(gclogFullName, ' - result gc log file already exist.')
         return
