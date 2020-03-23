@@ -37,15 +37,19 @@ def generateFocusPointFile(focusPointPath, focusPointFullName):
                 focuspointCsvFile = open(parent + os.sep + filename, 'r')
                 reader = csv.DictReader(focuspointCsvFile)
 
-                # 按行读取dict格式的数据
-                for row in reader:
-                    if row.get('id').startswith('FR-F4002') or row.get('id').startswith('FR-F4003'):
-                        if '' in row:
-                            # 时间戳ms转为s
-                            localTime = time.localtime(int(row.get('time')) / 1000)
-                            localTimeToSave = time.strftime('%Y-%m-%d %H:%M:%S', localTime)
-                            row[''] = localTimeToSave
-                            resultFocusPointWriter.writerow(row)
-                focuspointCsvFile.close()
+                try:
+                    # 按行读取dict格式的数据
+                    for row in reader:
+                        if row.get('id').startswith('FR-F4002') or row.get('id').startswith('FR-F4003'):
+                            if '' in row:
+                                # 时间戳ms转为s
+                                localTime = time.localtime(int(row.get('time')) / 1000)
+                                localTimeToSave = time.strftime('%Y-%m-%d %H:%M:%S', localTime)
+                                row[''] = localTimeToSave
+                                resultFocusPointWriter.writerow(row)
+                    focuspointCsvFile.close()
+                except Exception:
+                    print('record row error.', )
+
     resultFocusPointLogFile.close()
     analyzeFileUtils.analyzeFileUtils.sortFileMessage(focusPointFullName, ['time'])

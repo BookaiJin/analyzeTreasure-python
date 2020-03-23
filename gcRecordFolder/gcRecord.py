@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-' 解析gc日志 '
+""" 解析gc日志 """
 
 __author__ = 'bokai'
 

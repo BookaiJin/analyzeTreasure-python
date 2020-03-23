@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+' 遍历gc日志中的gcStartTime，匹配gcRecord中缺失的条目输出 '
+
+__author__ = 'bokai'
+
+import os
+
+
+def filter_and_output(gc_log_file, gc_record_file):
+    result_file_name = gc_log_file + os.extsep + 'filter.log'
+    if os.path.exists(result_file_name):
+        print('result file already exists: ', result_file_name, '.')
+        return
+    writer = open(result_file_name, 'a+')
+    gc_log_reader = open(gc_log_file)
+    gc_record_reader = open(gc_record_file)
+    for row in gc_log_reader.readline():
+        row_timestamp = row[:-1]
+        if row_timestamp not in gc_record_reader.read():
+            writer.write(row)
+
+
+if __name__ == '__main__':
+    gcLogFile = input('gc日志文件名: ')
+    gcRecordFile = input('gcRecord文件名: ')
+    filter_and_output(gcLogFile, gcRecordFile)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-' main '
+""" main """
 
 __author__ = 'bokai'
 
