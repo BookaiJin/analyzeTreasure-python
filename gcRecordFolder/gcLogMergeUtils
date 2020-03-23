@@ -27,16 +27,20 @@ def merge_log_files(log_files_path):
     date_start_with_str = '' + str(date_start_with)
     if len(str(date_start_with)) == 1:
         date_start_with_str = '0' + str(date_start_with)
-    while os.path.exists(log_file_start_with + date_start_with_str):
-        reader = open(log_file_start_with + date_start_with_str)
-        # 写一个文件 换一行
-        writer.write(reader.read())
+    # 中间某几天缺失的不管，总不会有超过31号的后缀吧
+    while True:
+        if os.path.exists(log_file_start_with + date_start_with_str):
+            reader = open(log_file_start_with + date_start_with_str)
+            # 写一个文件 换一行
+            writer.write(reader.read())
         date_start_with_str = '' + str(date_start_with)
         date_start_with += 1
         if len(str(date_start_with)) == 1:
             date_start_with_str = '0' + str(date_start_with)
         else:
             date_start_with_str = str(date_start_with)
+        if date_start_with > 31:
+            break
     if os.path.exists(log_files_path + 'fanruan.gc.log'):
         reader = open(log_files_path + 'fanruan.gc.log')
         # 写整个文件
