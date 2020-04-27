@@ -25,10 +25,14 @@ def generateFocusPointFile(focusPointPath, focusPointFullName):
     if os.path.exists(focusPointFullName):
         print(focusPointFullName, ' - result gc log file already exist.')
         return
+    # 固化专用
+    result_5002_file = open(focusPointFullName + 'solid.log', 'w')
     resultFocusPointLogFile = open(focusPointFullName, 'w')
     resultFocusPointFileHeader = ['', 'id', 'time', 'username', 'source', 'text', 'title', 'body']
     resultFocusPointWriter = csv.DictWriter(resultFocusPointLogFile, resultFocusPointFileHeader)
     resultFocusPointWriter.writeheader()
+    result_5002_file_writer = csv.DictWriter(result_5002_file, resultFocusPointFileHeader)
+    result_5002_file_writer.writeheader()
     for parent, dirname, filenames in os.walk(focusPointPath):
         # filenames是一个list所有focuspoint文件的集合
         for filename in filenames:
@@ -47,6 +51,8 @@ def generateFocusPointFile(focusPointPath, focusPointFullName):
                                 localTimeToSave = time.strftime('%Y-%m-%d %H:%M:%S', localTime)
                                 row[''] = localTimeToSave
                                 resultFocusPointWriter.writerow(row)
+                        if row.get('id').startswith('FR-F5002'):
+                            result_5002_file_writer.writerow(row)
                     focuspointCsvFile.close()
                 except Exception:
                     print('record row error.', )
