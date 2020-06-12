@@ -44,7 +44,8 @@ def generateFocusPointFile(focusPointPath, focusPointFullName):
                 try:
                     # 按行读取dict格式的数据
                     for row in reader:
-                        if row.get('id').startswith('FR-F4002') or row.get('id').startswith('FR-F4003'):
+                        if row.get('id').startswith('FR-F4002') or row.get('id').startswith('FR-F4003') or row.get(
+                                'id').startswith('FR-F4004'):
                             if '' in row:
                                 # 时间戳ms转为s
                                 localTime = time.localtime(int(row.get('time')) / 1000)

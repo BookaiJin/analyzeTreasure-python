@@ -7,7 +7,7 @@ __author__ = 'bokai'
 
 import os
 import zipfile
-
+import realTimeUsage.realTimeUsage
 import gcRecordFolder.gcRecord
 import time
 
@@ -40,11 +40,14 @@ def startAnaly(treasurePath):
     gcRecordFilesPath = desResultPath + os.sep + 'gclog'
     # 解压出来的focusPoint文件 zippath/result/focuspoint/focuspoint类文件
     focuspointFilesPath = desResultPath + os.sep + 'focuspoint'
+    # 解压出来的realTimeUsage文件 zippath/result/realTimeUsage/realTimeUsage类文件
+    realTimeUsageFilesPath = desResultPath + os.sep + 'realtimeusage'
     # 合并后的gc日志 zippath/result/treas201901.gc.log
     gcFileFullName = desResultPath + os.sep + zipFileShortName + '.gc.log'
     # 解析focusPoint文件夹 zippath/result/treas201901.focuspoint.log
-    focuspointFileFullName = desResultPath + \
-                             os.sep + zipFileShortName + '.focuspoint.csv'
+    focuspointFileFullName = desResultPath + os.sep + zipFileShortName + '.focuspoint.csv'
+    # 解析reamTime文件夹 zippath/result/treas201901.reamtime.log
+    realTimeUsageFileFullName = desResultPath + os.sep + zipFileShortName + ".realtime.csv"
 
     # 遍历日压缩包
     zipDic = os.walk(zipDesResultPath)
@@ -65,11 +68,16 @@ def startAnaly(treasurePath):
                     if dayFile.startswith('focusPoint'):
                         dayUnzip.extract(dayFile, focuspointFilesPath)
 
+                    # realTimeUsage文件处理
+                    if dayFile.startswith('realTime'):
+                        dayUnzip.extract(dayFile, realTimeUsageFilesPath)
+
     unzipEndTime = time.time()
     print('unzip time:', (unzipEndTime - startTime) * 1000, 'ms')
 
     gcRecordFolder.gcRecord.generateGclog(gcRecordFilesPath, gcFileFullName)
     focusPoint.focusPoint.generateFocusPointFile(focuspointFilesPath, focuspointFileFullName)
+    realTimeUsage.realTimeUsage.generateRealTimeUsage(realTimeUsageFilesPath, realTimeUsageFileFullName)
 
     endTime = time.time()
     print('total time:', (endTime - startTime) * 1000, 'ms')
