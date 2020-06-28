@@ -26,7 +26,7 @@ def generateFocusPointFile(focusPointPath, focusPointFullName):
         print(focusPointFullName, ' - result gc log file already exist.')
         return
     # 固化专用
-    result_5002_file = open(focusPointFullName + 'solid.log', 'w')
+    result_5002_file = open(focusPointFullName + 'shutdown.log', 'w')
     resultFocusPointLogFile = open(focusPointFullName, 'w')
     resultFocusPointFileHeader = ['', 'id', 'time', 'username', 'source', 'text', 'title', 'body']
     resultFocusPointWriter = csv.DictWriter(resultFocusPointLogFile, resultFocusPointFileHeader)
