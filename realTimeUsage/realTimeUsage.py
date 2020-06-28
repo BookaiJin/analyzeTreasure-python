@@ -48,3 +48,9 @@ def generateRealTimeUsage(realTimeUsagePath, realTimeUsageFullName):
 
     resultRealTimeUsageLogFile.close()
     analyzeFileUtils.analyzeFileUtils.sortFileMessage(realTimeUsageFullName, ['time'])
+
+
+if __name__ == '__main__':
+    realTimeUsagePath = input('realTimeUsagePath文件夹: ')
+    realTimeUsageFullName = input('realTimeUsageFullName文件名: ')
+    generateRealTimeUsage(realTimeUsagePath, realTimeUsageFullName)

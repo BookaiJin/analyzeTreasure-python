@@ -34,9 +34,12 @@ def generateGclog(gclogPath, gclogFullName):
                 # 打开每个文件
                 gcCsvFile = open(parent + os.sep + filename, 'r')
                 gcFileReader = csv.DictReader(gcCsvFile)
-                for row in gcFileReader:
-                    gcRow = gcRecordFolder.gcLogUtils.generateGcLog(row, resultGcLogFileHeader)
-                    resultGcLogFileWriter.writerow(gcRow)
+                try:
+                    for row in gcFileReader:
+                        gcRow = gcRecordFolder.gcLogUtils.generateGcLog(row, resultGcLogFileHeader)
+                        resultGcLogFileWriter.writerow(gcRow)
+                except Exception:
+                    print("gcRecord row read failed.", filename, 'line:', gcFileReader.line_num)
 
                 gcCsvFile.close()
 

@@ -56,7 +56,7 @@ def generateFocusPointFile(focusPointPath, focusPointFullName):
                             result_5002_file_writer.writerow(row)
                     focuspointCsvFile.close()
                 except Exception:
-                    print('record row error.', )
+                    print("focusPoint row read failed.", filename, 'line:', reader.line_num)
 
     resultFocusPointLogFile.close()
     analyzeFileUtils.analyzeFileUtils.sortFileMessage(focusPointFullName, ['time'])
