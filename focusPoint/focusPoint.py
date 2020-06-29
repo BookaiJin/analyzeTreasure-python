@@ -28,7 +28,7 @@ def generateFocusPointFile(focusPointPath, focusPointFullName):
     # 固化专用
     result_5002_file = open(focusPointFullName + '.shutdown.log', 'w')
     resultFocusPointLogFile = open(focusPointFullName, 'w')
-    resultFocusPointFileHeader = ['', 'id', 'time', 'username', 'source', 'text', 'title', 'body']
+    resultFocusPointFileHeader = ['', 'id', 'time', 'node', 'username', 'source', 'text', 'title', 'body']
     resultFocusPointWriter = csv.DictWriter(resultFocusPointLogFile, resultFocusPointFileHeader)
     resultFocusPointWriter.writeheader()
     result_5002_file_writer = csv.DictWriter(result_5002_file, resultFocusPointFileHeader)
@@ -44,18 +44,21 @@ def generateFocusPointFile(focusPointPath, focusPointFullName):
                 try:
                     # 按行读取dict格式的数据
                     for row in reader:
-                        if '' in row:
-                            # 时间戳ms转为s
-                            localTime = time.localtime(int(row.get('time')) / 1000)
-                            localTimeToSave = time.strftime('%Y-%m-%dT%H:%M:%S', localTime)
-                            row[''] = localTimeToSave
-                            body = pd.json.loads(row.get('body'))
-                            row['node'] = body.get('node')
-                        if row.get('id').startswith('FR-F4002') or row.get('id').startswith('FR-F4003') or row.get(
-                                'id').startswith('FR-F4004'):
-                            resultFocusPointWriter.writerow(row)
-                        if row.get('id').startswith('FR-F5002'):
-                            resultFocusPointWriter.writerow(row)
+                        row_id = row.get('id')
+                        if row_id.startswith('FR-F4002') or row_id.startswith('FR-F4003') or row.get(
+                                'id').startswith('FR-F4004') or row_id.startswith('FR-F5002'):
+                            if '' in row:
+                                # 时间戳ms转为s
+                                localTime = time.localtime(int(row.get('time')) / 1000)
+                                localTimeToSave = time.strftime('%Y-%m-%dT%H:%M:%S', localTime)
+                                row[''] = localTimeToSave
+                                body = pd.json.loads(row.get('body'))
+                                row['node'] = body.get('node')
+                            if row_id.startswith('FR-F4002') or row_id.startswith('FR-F4003') or row.get(
+                                    'id').startswith('FR-F4004'):
+                                resultFocusPointWriter.writerow(row)
+                            if row_id.startswith('FR-F5002'):
+                                resultFocusPointWriter.writerow(row)
                     focuspointCsvFile.close()
                 except Exception:
                     print("focusPoint row read failed.", filename, 'line:', reader.line_num)
