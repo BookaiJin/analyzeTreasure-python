@@ -7,6 +7,7 @@ __author__ = 'bokai'
 
 import os
 import zipfile
+import shutil
 import realTimeUsage.realTimeUsage
 import gcRecordFolder.gcRecord
 import time
@@ -78,6 +79,9 @@ def startAnaly(treasurePath):
     gcRecordFolder.gcRecord.generateGclog(gcRecordFilesPath, gcFileFullName)
     focusPoint.focusPoint.generateFocusPointFile(focuspointFilesPath, focuspointFileFullName)
     realTimeUsage.realTimeUsage.generateRealTimeUsage(realTimeUsageFilesPath, realTimeUsageFileFullName)
+
+    # 删除日压缩包
+    shutil.rmtree(zipDesResultPath)
 
     endTime = time.time()
     print('total time:', (endTime - startTime) * 1000, 'ms')
