@@ -43,5 +43,6 @@ def generateGclog(gclogPath, gclogFullName):
 
                 gcCsvFile.close()
 
+    resultGcLogFile.close()
     # 先按照节点排序，分隔开之后，在按照时间排序
     analyzeFileUtils.analyzeFileUtils.sortFileMessage(gclogFullName, ['node', 'gcStartTime'])

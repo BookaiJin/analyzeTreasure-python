@@ -26,7 +26,7 @@ def generateFocusPointFile(focusPointPath, focusPointFullName):
         print(focusPointFullName, ' - result gc log file already exist.')
         return
     # 固化专用
-    result_5002_file = open(focusPointFullName + 'shutdown.log', 'w')
+    result_5002_file = open(focusPointFullName + '.shutdown.log', 'w')
     resultFocusPointLogFile = open(focusPointFullName, 'w')
     resultFocusPointFileHeader = ['', 'id', 'time', 'username', 'source', 'text', 'title', 'body']
     resultFocusPointWriter = csv.DictWriter(resultFocusPointLogFile, resultFocusPointFileHeader)
@@ -44,19 +44,23 @@ def generateFocusPointFile(focusPointPath, focusPointFullName):
                 try:
                     # 按行读取dict格式的数据
                     for row in reader:
+                        if '' in row:
+                            # 时间戳ms转为s
+                            localTime = time.localtime(int(row.get('time')) / 1000)
+                            localTimeToSave = time.strftime('%Y-%m-%dT%H:%M:%S', localTime)
+                            row[''] = localTimeToSave
+                            body = pd.json.loads(row.get('body'))
+                            row['node'] = body.get('node')
                         if row.get('id').startswith('FR-F4002') or row.get('id').startswith('FR-F4003') or row.get(
                                 'id').startswith('FR-F4004'):
-                            if '' in row:
-                                # 时间戳ms转为s
-                                localTime = time.localtime(int(row.get('time')) / 1000)
-                                localTimeToSave = time.strftime('%Y-%m-%d %H:%M:%S', localTime)
-                                row[''] = localTimeToSave
-                                resultFocusPointWriter.writerow(row)
+                            resultFocusPointWriter.writerow(row)
                         if row.get('id').startswith('FR-F5002'):
-                            result_5002_file_writer.writerow(row)
+                            resultFocusPointWriter.writerow(row)
                     focuspointCsvFile.close()
                 except Exception:
                     print("focusPoint row read failed.", filename, 'line:', reader.line_num)
 
     resultFocusPointLogFile.close()
-    analyzeFileUtils.analyzeFileUtils.sortFileMessage(focusPointFullName, ['time'])
+    result_5002_file.close()
+    analyzeFileUtils.analyzeFileUtils.sortFileMessage(resultFocusPointLogFile, ['node', 'time'])
+    analyzeFileUtils.analyzeFileUtils.sortFileMessage(result_5002_file, ['node', 'time'])
