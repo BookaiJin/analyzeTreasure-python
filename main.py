@@ -76,12 +76,12 @@ def startAnaly(treasurePath):
     unzipEndTime = time.time()
     print('unzip time:', (unzipEndTime - startTime) * 1000, 'ms')
 
+    # 删除日压缩包
+    shutil.rmtree(zipDesResultPath)
+
     gcRecordFolder.gcRecord.generateGclog(gcRecordFilesPath, gcFileFullName)
     focusPoint.focusPoint.generateFocusPointFile(focuspointFilesPath, focuspointFileFullName)
     realTimeUsage.realTimeUsage.generateRealTimeUsage(realTimeUsageFilesPath, realTimeUsageFileFullName)
-
-    # 删除日压缩包
-    shutil.rmtree(zipDesResultPath)
 
     endTime = time.time()
     print('total time:', (endTime - startTime) * 1000, 'ms')
