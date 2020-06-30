@@ -79,7 +79,7 @@ def startAnaly(treasurePath):
     # 删除日压缩包
     shutil.rmtree(zipDesResultPath)
 
-    gcRecordFolder.gcRecord.generateGclog(gcRecordFilesPath, gcFileFullName)
+    gcRecordFolder.gcRecord.generate_gc_log(gcRecordFilesPath, gcFileFullName)
     focusPoint.focusPoint.generateFocusPointFile(focuspointFilesPath, focuspointFileFullName)
     realTimeUsage.realTimeUsage.generate_realtime_usage(realTimeUsageFilesPath, realTimeUsageFileFullName)
 

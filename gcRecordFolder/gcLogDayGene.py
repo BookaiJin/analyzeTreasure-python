@@ -17,18 +17,18 @@ def generate_day_log(gc_record_file):
     if os.path.exists(result_day_gc_log):
         print(result_day_gc_log, ' - result log file already exists.')
         return
-    resultGcLogFile = open(result_day_gc_log, 'w')
-    resultGcLogFileHeader = ['log', 'gcStartTime', 'node']
-    resultGcLogFileWriter = csv.DictWriter(resultGcLogFile, resultGcLogFileHeader)
-    resultGcLogFileWriter.writeheader()
+    result_gc_log_file = open(result_day_gc_log, 'w')
+    result_gc_log_file_header = ['log', 'gcStartTime', 'node']
+    result_gc_log_file_writer = csv.DictWriter(result_gc_log_file, result_gc_log_file_header)
+    result_gc_log_file_writer.writeheader()
 
-    gcCsvFile = open(gc_record_file, 'r')
-    gcFileReader = csv.DictReader(gcCsvFile)
-    for row in gcFileReader:
-        gcRow = gcRecordFolder.gcLogUtils.generateGcLog(row, resultGcLogFileHeader)
-        resultGcLogFileWriter.writerow(gcRow)
+    gc_csv_file = open(gc_record_file, 'r')
+    gc_file_reader = csv.DictReader(gc_csv_file)
+    for row in gc_file_reader:
+        gcRow = gcRecordFolder.gcLogUtils.generate_gc_log(row, result_gc_log_file_header)
+        result_gc_log_file_writer.writerow(gcRow)
 
-    gcCsvFile.close()
+    gc_csv_file.close()
     analyzeFileUtils.analyzeFileUtils.sortFileMessage(result_day_gc_log, ['node', 'gcStartTime'])
 
 

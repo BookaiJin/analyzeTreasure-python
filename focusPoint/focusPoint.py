@@ -7,7 +7,7 @@ __author__ = 'bokai'
 
 import os
 import csv
-import time
+import myTime.utils
 import analyzeFileUtils.analyzeFileUtils
 import pandas as pd
 
@@ -53,9 +53,7 @@ def generateFocusPointFile(focus_point_path, focus_point_full_name):
                                 row_result_dict = {'id': row_id, 'time': '', 'date': '', 'node': '', 'username': '',
                                                    'source': '', 'text': '', 'title': '', 'body': ''}
                                 if row[1] != '':
-                                    # 时间戳ms转为s
-                                    local_time = time.localtime(int(row[1]) / 1000)
-                                    local_time_to_save = time.strftime('%Y-%m-%dT%H:%M:%S', local_time)
+                                    local_time_to_save = myTime.utils.convert_time_to_date(row[1])
                                     row_result_dict['time'] = row[1]
                                     row_result_dict['date'] = local_time_to_save
                                     row_result_dict['body'] = row[6]

@@ -7,7 +7,7 @@ import csv
 __author__ = 'bokai'
 
 import os
-import time
+import myTime.utils
 import analyzeFileUtils.analyzeFileUtils
 
 
@@ -42,9 +42,7 @@ def generate_realtime_usage(realtime_usage_path, realtime_usage_fullname):
                                                    'sessionnum': '', 'onlinenum': '', 'pid': '', 'templateRequest': '',
                                                    'httpRequest': '', 'sessionRequest': '', 'fineIO': '', 'NIO': '',
                                                    'bufferMemUse': '', 'physicalMemUse': '', 'physicalMemFree': ''}
-                                # 时间戳ms转为s
-                                local_time = time.localtime(int(row[0]) / 1000)
-                                local_time_to_save = time.strftime('%Y-%m-%dT%H:%M:%S', local_time)
+                                local_time_to_save = myTime.utils.convert_time_to_date(row[0])
                                 row_result_dict['date'] = local_time_to_save
                                 fill_result_dict_from_row(row_result_dict, row)
                                 result_real_time_writer.writerow(row_result_dict)
