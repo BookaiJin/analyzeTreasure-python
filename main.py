@@ -81,7 +81,7 @@ def startAnaly(treasurePath):
 
     gcRecordFolder.gcRecord.generateGclog(gcRecordFilesPath, gcFileFullName)
     focusPoint.focusPoint.generateFocusPointFile(focuspointFilesPath, focuspointFileFullName)
-    realTimeUsage.realTimeUsage.generateRealTimeUsage(realTimeUsageFilesPath, realTimeUsageFileFullName)
+    realTimeUsage.realTimeUsage.generate_realtime_usage(realTimeUsageFilesPath, realTimeUsageFileFullName)
 
     endTime = time.time()
     print('total time:', (endTime - startTime) * 1000, 'ms')

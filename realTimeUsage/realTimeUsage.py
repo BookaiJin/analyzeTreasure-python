@@ -11,46 +11,74 @@ import time
 import analyzeFileUtils.analyzeFileUtils
 
 
-def generateRealTimeUsage(realTimeUsagePath, realTimeUsageFullName):
-    if not os.path.exists(realTimeUsagePath):
+def generate_realtime_usage(realtime_usage_path, realtime_usage_fullname):
+    if not os.path.exists(realtime_usage_path):
         print('这个版本的treas包没有realTime表. fu*k u again')
         return
-    if os.path.exists(realTimeUsageFullName):
-        print(realTimeUsageFullName, ' - result gc log file already exist.')
+    if os.path.exists(realtime_usage_fullname):
+        print(realtime_usage_fullname, ' - result gc log file already exist.')
         return
-    resultRealTimeUsageLogFile = open(realTimeUsageFullName, 'w')
-    resultRealTimeUsageFileHeader = ['date', 'time', 'node', 'cpu', 'memory', 'sessionnum', 'onlinenum', 'pid',
-                                     'templateRequest', 'httpRequest', 'sessionRequest', 'fineIO', 'NIO',
-                                     'bufferMemUse', 'physicalMemUse', 'physicalMemFree', '']
+    result_real_time_usage_log_file = open(realtime_usage_fullname, 'w')
+    result_real_time_usage_file_header = ['date', 'time', 'node', 'cpu', 'memory', 'sessionnum', 'onlinenum', 'pid',
+                                          'templateRequest', 'httpRequest', 'sessionRequest', 'fineIO', 'NIO',
+                                          'bufferMemUse', 'physicalMemUse', 'physicalMemFree', '']
 
-    resultRealTimeWriter = csv.DictWriter(resultRealTimeUsageLogFile, resultRealTimeUsageFileHeader)
-    resultRealTimeWriter.writeheader()
-    for parent, dirname, filenames in os.walk(realTimeUsagePath):
+    result_real_time_writer = csv.DictWriter(result_real_time_usage_log_file, result_real_time_usage_file_header)
+    result_real_time_writer.writeheader()
+    for parent, dirname, filenames in os.walk(realtime_usage_path):
         # filenames是一个list所有focuspoint文件的集合
         for filename in filenames:
             if filename.startswith('realTime') and filename.endswith('.csv'):
                 # 打开每个文件
-                realTimeCsvFile = open(parent + os.sep + filename, 'r')
-                reader = csv.DictReader(realTimeCsvFile)
+                real_time_csv_file = open(parent + os.sep + filename, 'r')
+                reader = csv.reader(real_time_csv_file)
 
-                try:
-                    # 按行读取dict格式的数据
-                    for row in reader:
-                        if '' in row:
-                            # 时间戳ms转为s
-                            localTime = time.localtime(int(row.get('time')) / 1000)
-                            localTimeToSave = time.strftime('%Y-%m-%d %H:%M:%S', localTime)
-                            row['date'] = localTimeToSave
-                            resultRealTimeWriter.writerow(row)
-                    realTimeCsvFile.close()
-                except Exception:
-                    print('record row error.', )
+                j = 0
+                for i, row in enumerate(reader):
+                    if i == j:
+                        try:
+                            if row[0] != '' and row[0] != 'time':
+                                row_result_dict = {'date': '', 'time': '', 'node': '', 'cpu': '', 'memory': '',
+                                                   'sessionnum': '', 'onlinenum': '', 'pid': '', 'templateRequest': '',
+                                                   'httpRequest': '', 'sessionRequest': '', 'fineIO': '', 'NIO': '',
+                                                   'bufferMemUse': '', 'physicalMemUse': '', 'physicalMemFree': ''}
+                                # 时间戳ms转为s
+                                local_time = time.localtime(int(row[0]) / 1000)
+                                local_time_to_save = time.strftime('%Y-%m-%dT%H:%M:%S', local_time)
+                                row_result_dict['date'] = local_time_to_save
+                                fill_result_dict_from_row(row_result_dict, row)
+                                result_real_time_writer.writerow(row_result_dict)
+                        except Exception as e:
+                            print("focusPoint row read failed.", filename, 'line:', reader.line_num)
+                        finally:
+                            j = j + 1
 
-    resultRealTimeUsageLogFile.close()
-    analyzeFileUtils.analyzeFileUtils.sortFileMessage(realTimeUsageFullName, ['time'])
+                real_time_csv_file.close()
+
+    result_real_time_usage_log_file.close()
+    analyzeFileUtils.analyzeFileUtils.sortFileMessage(realtime_usage_fullname, ['time'])
+
+
+def fill_result_dict_from_row(row_result_dict, row):
+    row_result_dict['time'] = row[0]
+    row_result_dict['node'] = row[1]
+    row_result_dict['cpu'] = row[2]
+    row_result_dict['memory'] = row[3]
+    row_result_dict['sessionnum'] = row[4]
+    row_result_dict['onlinenum'] = row[5]
+    row_result_dict['pid'] = row[6]
+    row_result_dict['templateRequest'] = row[7]
+    row_result_dict['httpRequest'] = row[8]
+    row_result_dict['sessionRequest'] = row[9]
+    if len(row) > 11:
+        row_result_dict['fineIO'] = row[10]
+        row_result_dict['NIO'] = row[11]
+        row_result_dict['bufferMemUse'] = row[12]
+        row_result_dict['physicalMemUse'] = row[13]
+        row_result_dict['physicalMemFree'] = row[14]
 
 
 if __name__ == '__main__':
     realTimeUsagePath = input('realTimeUsagePath文件夹: ')
     realTimeUsageFullName = input('realTimeUsageFullName文件名: ')
-    generateRealTimeUsage(realTimeUsagePath, realTimeUsageFullName)
+    generate_realtime_usage(realTimeUsagePath, realTimeUsageFullName)
