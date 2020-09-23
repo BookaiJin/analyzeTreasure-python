@@ -56,14 +56,18 @@ def generateFocusPointFile(focus_point_path, focus_point_full_name):
                                     local_time_to_save = myTime.utils.convert_time_to_date(row[1])
                                     row_result_dict['time'] = row[1]
                                     row_result_dict['date'] = local_time_to_save
-                                    row_result_dict['body'] = row[6]
+                                    row_result_dict['username'] = row[2]
+                                    row_result_dict['source'] = row[4]
+                                    row_result_dict['text'] = row[5]
+                                    row_result_dict['title'] = row[6]
+                                    row_result_dict['body'] = row[7]
                                     node = ''
-                                    if row[6] != '':
-                                        body = pd.json.loads(row[6])
+                                    if row[7] != '':
+                                        body = pd.json.loads(row[7])
                                         node = body.get('node')
                                     row_result_dict['node'] = node
                                     if row_id.startswith('FR-F4002') or row_id.startswith('FR-F4003') or \
-                                            row.get('id').startswith('FR-F4004'):
+                                            row_id.startswith('FR-F4004'):
                                         result_focus_point_writer.writerow(row_result_dict)
                                     if row_id.startswith('FR-F5002'):
                                         result_5002_file_writer.writerow(row_result_dict)
@@ -78,3 +82,6 @@ def generateFocusPointFile(focus_point_path, focus_point_full_name):
     result_5002_file.close()
     analyzeFileUtils.analyzeFileUtils.sortFileMessage(focus_point_full_name, ['node', 'time'])
     analyzeFileUtils.analyzeFileUtils.sortFileMessage(focus_point_shutdown_full_name, ['node', 'time'])
+
+if __name__=='__main__':
+    generateFocusPointFile("/Users/bokai/Work/FR/永不宕机/晨光/treas20200910","/Users/bokai/Work/FR/永不宕机/晨光/treas20200910/fresultocusPoint20200910aaa.csv")
