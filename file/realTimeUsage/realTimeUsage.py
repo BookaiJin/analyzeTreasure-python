@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-' main '
+""" main """
 import csv
 
 __author__ = 'bokai'
 
 import os
-import myTime.utils
-import analyzeFileUtils.analyzeFileUtils
+import utils.myTime.utils
+from utils.analyzeFileUtils import analyzeFileUtils
 
 
 def generate_realtime_usage(realtime_usage_path, realtime_usage_fullname):
@@ -42,7 +42,7 @@ def generate_realtime_usage(realtime_usage_path, realtime_usage_fullname):
                                                    'sessionnum': '', 'onlinenum': '', 'pid': '', 'templateRequest': '',
                                                    'httpRequest': '', 'sessionRequest': '', 'fineIO': '', 'NIO': '',
                                                    'bufferMemUse': '', 'physicalMemUse': '', 'physicalMemFree': ''}
-                                local_time_to_save = myTime.utils.convert_time_to_date(row[0])
+                                local_time_to_save = utils.myTime.utils.convert_time_to_date(row[0])
                                 row_result_dict['date'] = local_time_to_save
                                 fill_result_dict_from_row(row_result_dict, row)
                                 result_real_time_writer.writerow(row_result_dict)
@@ -54,7 +54,7 @@ def generate_realtime_usage(realtime_usage_path, realtime_usage_fullname):
                 real_time_csv_file.close()
 
     result_real_time_usage_log_file.close()
-    analyzeFileUtils.analyzeFileUtils.sortFileMessage(realtime_usage_fullname, ['time'])
+    utils.analyzeFileUtils.analyzeFileUtils.sort_file_message(realtime_usage_fullname, ['time'])
 
 
 def fill_result_dict_from_row(row_result_dict, row):

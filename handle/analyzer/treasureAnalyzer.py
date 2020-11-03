@@ -2,17 +2,16 @@
 # -*- coding: utf-8 -*-
 
 """ main """
+from file.focusPoint import focusPoint
+from file.gcRecordFolder import gcRecord
+from file.realTimeUsage import realTimeUsage
 
 __author__ = 'bokai'
 
 import os
 import zipfile
 import shutil
-import realTimeUsage.realTimeUsage
-import gcRecordFolder.gcRecord
 import time
-
-import focusPoint.focusPoint
 
 
 # zippath/treas201901.zip
@@ -79,9 +78,9 @@ def startAnaly(treasurePath):
     # 删除日压缩包
     shutil.rmtree(zipDesResultPath)
 
-    gcRecordFolder.gcRecord.generate_gc_log(gcRecordFilesPath, gcFileFullName)
-    realTimeUsage.realTimeUsage.generate_realtime_usage(realTimeUsageFilesPath, realTimeUsageFileFullName)
-    focusPoint.focusPoint.generateFocusPointFile(focuspointFilesPath, focuspointFileFullName)
+    gcRecord.generate_gc_log(gcRecordFilesPath, gcFileFullName)
+    realTimeUsage.generate_realtime_usage(realTimeUsageFilesPath, realTimeUsageFileFullName)
+    focusPoint.generate_focus_point_file(focuspointFilesPath, focuspointFileFullName)
 
     endTime = time.time()
     print('total time:', (endTime - startTime) * 1000, 'ms')

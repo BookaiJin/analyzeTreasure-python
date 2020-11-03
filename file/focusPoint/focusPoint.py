@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-' main '
+""" main """
 
 __author__ = 'bokai'
 
 import os
 import csv
-import myTime.utils
-import analyzeFileUtils.analyzeFileUtils
+import utils.myTime.utils
+from utils.analyzeFileUtils import analyzeFileUtils
 import pandas as pd
 
 
 # 给一个focuspoint解压后的路径，解析里面的focusPoint文件
 # zippath/result/focusPoint/focusPoint类文件
 # 解析后合并的文件名
-# zippath/result/treas201901.focuspoint.csv
+# zip_path/result/treas201901.focuspoint.csv
 
 
-def generateFocusPointFile(focus_point_path, focus_point_full_name):
+def generate_focus_point_file(focus_point_path, focus_point_full_name):
     if not os.path.exists(focus_point_path):
         print('这个版本的treas包没有FocusPoint表. fu*k u again')
         return
@@ -53,7 +53,7 @@ def generateFocusPointFile(focus_point_path, focus_point_full_name):
                                 row_result_dict = {'id': row_id, 'time': '', 'date': '', 'node': '', 'username': '',
                                                    'source': '', 'text': '', 'title': '', 'body': ''}
                                 if row[1] != '':
-                                    local_time_to_save = myTime.utils.convert_time_to_date(row[1])
+                                    local_time_to_save = utils.myTime.utils.convert_time_to_date(row[1])
                                     row_result_dict['time'] = row[1]
                                     row_result_dict['date'] = local_time_to_save
                                     row_result_dict['username'] = row[2]
@@ -80,8 +80,10 @@ def generateFocusPointFile(focus_point_path, focus_point_full_name):
 
     result_focus_point_log_file.close()
     result_5002_file.close()
-    analyzeFileUtils.analyzeFileUtils.sortFileMessage(focus_point_full_name, ['node', 'time'])
-    analyzeFileUtils.analyzeFileUtils.sortFileMessage(focus_point_shutdown_full_name, ['node', 'time'])
+    utils.analyzeFileUtils.analyzeFileUtils.sort_file_message(focus_point_full_name, ['node', 'time'])
+    utils.analyzeFileUtils.analyzeFileUtils.sort_file_message(focus_point_shutdown_full_name, ['node', 'time'])
 
-if __name__=='__main__':
-    generateFocusPointFile("/Users/bokai/Work/FR/永不宕机/晨光/treas20200910","/Users/bokai/Work/FR/永不宕机/晨光/treas20200910/fresultocusPoint20200910aaa.csv")
+
+if __name__ == '__main__':
+    generate_focus_point_file("/Users/bokai/Work/FR/永不宕机/晨光/treas20200910",
+                           "/Users/bokai/Work/FR/永不宕机/晨光/treas20200910/fresultocusPoint20200910aaa.csv")
