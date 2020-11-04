@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-' 解析gc日志 '
+""" 解析gc日志 """
+# 弃用，溯源用
 from entity.gc.GcInfoMessage import GcInfoMessage
 
 __author__ = 'bokai'
@@ -28,6 +29,7 @@ def generate_gc_log(gc_record_dict):
     # {}: [{} ({}) [PSYoungGen: {}K->{}K({}K)] [ParOldGen: {}K->{}K({}K)] {}K->{}K({}K), [Metaspace: {}K->{}K({}K)], {} secs] [Times: real={} secs]
     # 2019-12-05T09:01:33.354+0800: 86944.964: [Full GC (System.gc()) [PSYoungGen: 96K->0K(3393536K)] [ParOldGen: 341136K->341075K(3211776K)] 341232K->341075K(6605312K), [Metaspace: 150304K->150304K(154008K)], 0.295 secs] [Times: real=0.295 secs]
 
+    result_str = ''
     if gc_record_dict['gcType'] == 'GC':
         result_str = young_result_str_temp.format(gc_start_time, gc_record_dict.get('gcType'),
                                                   gc_record_dict.get('gcCause'),

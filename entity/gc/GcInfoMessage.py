@@ -2,6 +2,8 @@ import datetime
 
 import pytz
 
+from utils.myTime import utils
+
 
 class GcInfoMessage:
     __node = '1'
@@ -34,14 +36,13 @@ class GcInfoMessage:
         self.__gc_cause = gc_record_dict.get('gcCause')
         self.__gc_duration = gc_record_dict.get('duration')
         self.__pid = gc_record_dict.get('pid')
-        temp_time = datetime.datetime.fromtimestamp(int(self.__timestamps) / 1000,
-                                                    pytz.timezone('Asia/Shanghai')).strftime('%Y-%m-%dT%H:%M:%S.%f%z')
+        temp_time = utils.convert_time2date_timezone(self.__timestamps)
         self.__start_time = temp_time[:23] + temp_time[26:]
         self.__gc_record_dict = gc_record_dict
 
     def to_print_gc_log(self):
         result_str = ''
-        if self.__gc_type == 'gc':
+        if self.__gc_type == 'GC':
             result_str = self.__young_result_str_temp.format(self.__start_time, self.__gc_type,
                                                              self.__gc_cause,
                                                              self.__gc_record_dict.get('youngBeforeUsed'),
@@ -74,3 +75,12 @@ class GcInfoMessage:
 
         result = {'log': result_str, 'gcStartTime': self.__timestamps, 'node': self.__node}
         return result
+
+    def get_node(self):
+        return self.__node
+
+    def get_pid(self):
+        return self.__pid
+
+    def get_timestamps(self):
+        return self.__timestamps

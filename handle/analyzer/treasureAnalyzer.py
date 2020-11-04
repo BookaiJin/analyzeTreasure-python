@@ -17,37 +17,37 @@ import time
 # zippath/treas201901.zip
 
 
-def startAnaly(treasurePath):
+def startAnaly(treasure_path):
     # shortName treas201901
-    zipFileShortName = str.split(
-        str.split(treasurePath, os.extsep)[0], os.sep)[-1]
+    zip_file_short_name = str.split(
+        str.split(treasure_path, os.extsep)[0], os.sep)[-1]
     # zippath/result/
-    desResultPath = os.sep.join(
-        str.split(treasurePath, os.extsep)[:1]) + 'result'
-    startTime = time.time()
+    des_result_path = os.sep.join(
+        str.split(treasure_path, os.extsep)[:1]) + 'result'
+    start_time = time.time()
     print('start')
 
     # zippath/result/zip/
-    zipDesResultPath = desResultPath + os.sep + 'zip'
+    zipDesResultPath = des_result_path + os.sep + 'zip'
     # 读取月数据包里面的日压缩包
-    zFile = zipfile.ZipFile(treasurePath, 'r')
+    zFile = zipfile.ZipFile(treasure_path, 'r')
     for dayZip in zFile.namelist():
         if dayZip.endswith('.zip'):
             # 解压出日压缩包，treas20190101.zip、treas20190102.zip、treas20190103.zip...
             zFile.extract(dayZip, zipDesResultPath)
 
     # 解压出来的gcRecord文件 zippath/result/gclog/gcRecord类文件
-    gcRecordFilesPath = desResultPath + os.sep + 'gclog'
+    gc_record_files_path = des_result_path + os.sep + 'gclog'
     # 解压出来的focusPoint文件 zippath/result/focuspoint/focuspoint类文件
-    focuspointFilesPath = desResultPath + os.sep + 'focuspoint'
+    focuspoint_files_path = des_result_path + os.sep + 'focuspoint'
     # 解压出来的realTimeUsage文件 zippath/result/realTimeUsage/realTimeUsage类文件
-    realTimeUsageFilesPath = desResultPath + os.sep + 'realtimeusage'
+    realtime_usage_files_path = des_result_path + os.sep + 'realtimeusage'
     # 合并后的gc日志 zippath/result/treas201901.gc.log
-    gcFileFullName = desResultPath + os.sep + zipFileShortName + '.gc.log'
+    gc_file_full_name = des_result_path + os.sep + zip_file_short_name + '.gc.log'
     # 解析focusPoint文件夹 zippath/result/treas201901.focuspoint.log
-    focuspointFileFullName = desResultPath + os.sep + zipFileShortName + '.focuspoint.csv'
+    focuspoint_file_full_name = des_result_path + os.sep + zip_file_short_name + '.focuspoint.csv'
     # 解析reamTime文件夹 zippath/result/treas201901.reamtime.log
-    realTimeUsageFileFullName = desResultPath + os.sep + zipFileShortName + ".realtime.csv"
+    real_time_usage_file_full_name = des_result_path + os.sep + zip_file_short_name + ".realtime.csv"
 
     # 遍历日压缩包
     zipDic = os.walk(zipDesResultPath)
@@ -62,30 +62,32 @@ def startAnaly(treasurePath):
                 for dayFile in dayUnzip.namelist():
                     # gcRecord文件处理
                     if dayFile.startswith('gcRecord'):
-                        dayUnzip.extract(dayFile, gcRecordFilesPath)
+                        dayUnzip.extract(dayFile, gc_record_files_path)
 
                     # focuspoint文件处理
                     if dayFile.startswith('focusPoint'):
-                        dayUnzip.extract(dayFile, focuspointFilesPath)
+                        dayUnzip.extract(dayFile, focuspoint_files_path)
 
                     # realTimeUsage文件处理
                     if dayFile.startswith('realTime'):
-                        dayUnzip.extract(dayFile, realTimeUsageFilesPath)
+                        dayUnzip.extract(dayFile, realtime_usage_files_path)
 
-    unzipEndTime = time.time()
-    print('unzip time:', (unzipEndTime - startTime) * 1000, 'ms')
+    unzip_end_time = time.time()
+    print('unzip time:', (unzip_end_time - start_time) * 1000, 'ms')
 
     # 删除日压缩包
     shutil.rmtree(zipDesResultPath)
 
-    gcRecord.generate_gc_log(gcRecordFilesPath, gcFileFullName)
-    realTimeUsage.generate_realtime_usage(realTimeUsageFilesPath, realTimeUsageFileFullName)
-    focusPoint.generate_focus_point_file(focuspointFilesPath, focuspointFileFullName)
+    gc_info_message_node_pid_detail = gcRecord.generate_gc_log_and_get_node_pid_gc_info_list_detail(
+        gc_record_files_path, gc_file_full_name)
+    realtime_usage_node_pid_list_detail = realTimeUsage.generate_realtime_usage_and_get_node_pid_realtime_info_list_detail(
+        realtime_usage_files_path, real_time_usage_file_full_name)
+    focusPoint.generate_focus_point_file(focuspoint_files_path, focuspoint_file_full_name)
 
-    endTime = time.time()
-    print('total time:', (endTime - startTime) * 1000, 'ms')
+    end_time = time.time()
+    print('total time:', (end_time - start_time) * 1000, 'ms')
 
 
 if __name__ == '__main__':
-    treasurePath = input('输入treasure文件路径: ')
-    startAnaly(treasurePath)
+    treasure_path = input('输入treasure文件路径: ')
+    startAnaly(treasure_path)
