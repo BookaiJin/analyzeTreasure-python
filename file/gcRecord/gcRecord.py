@@ -3,7 +3,6 @@
 
 """ 解析gc日志 """
 from entity.gc.GcInfoMessage import GcInfoMessage
-from file.gcRecordFolder import gcLogUtils
 from utils.analyzeFileUtils import analyzeFileUtils
 
 __author__ = 'bokai'

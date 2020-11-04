@@ -7,7 +7,7 @@ __author__ = 'bokai'
 
 import os
 import csv
-import file.gcRecordFolder.gcLogUtils
+import file.gcRecordFolder.utils.gcLogUtils
 
 
 def generate_day_log(gc_record_file):
@@ -24,7 +24,7 @@ def generate_day_log(gc_record_file):
     gc_csv_file = open(gc_record_file, 'r')
     gc_file_reader = csv.DictReader(gc_csv_file)
     for row in gc_file_reader:
-        gcRow = file.gcRecordFolder.gcLogUtils.generate_gc_log(row)
+        gcRow = file.gcRecordFolder.utils.gcLogUtils.generate_gc_log(row)
         result_gc_log_file_writer.writerow(gcRow)
 
     gc_csv_file.close()

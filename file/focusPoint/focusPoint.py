@@ -18,7 +18,7 @@ import pandas as pd
 # zip_path/result/treas201901.focuspoint.csv
 
 
-def generate_focus_point_file(focus_point_path, focus_point_full_name):
+def generate_focus_point_log_and_get_focus_point_node_pid_list_detail(focus_point_path, focus_point_full_name):
     if not os.path.exists(focus_point_path):
         print('这个版本的treas包没有FocusPoint表. fu*k u again')
         return
@@ -34,13 +34,13 @@ def generate_focus_point_file(focus_point_path, focus_point_full_name):
     result_focus_point_writer.writeheader()
     result_5002_file_writer = csv.DictWriter(result_5002_file, result_focus_point_file_header)
     result_5002_file_writer.writeheader()
-    for parent, dirname, filenames in os.walk(focus_point_path):
+    for parent, dir_name, file_names in os.walk(focus_point_path):
         # filenames是一个list所有focuspoint文件的集合
-        for filename in filenames:
+        for filename in file_names:
             if filename.startswith('focusPoint') and filename.endswith('.csv'):
                 # 打开每个文件
-                focuspointCsvFile = open(parent + os.sep + filename, 'r')
-                reader = csv.reader(focuspointCsvFile)
+                focuspoint_csv_file = open(parent + os.sep + filename, 'r')
+                reader = csv.reader(focuspoint_csv_file)
 
                 j = 0
                 for i, rows in enumerate(reader):
@@ -76,7 +76,7 @@ def generate_focus_point_file(focus_point_path, focus_point_full_name):
                     finally:
                         j = j + 1
 
-                focuspointCsvFile.close()
+                focuspoint_csv_file.close()
 
     result_focus_point_log_file.close()
     result_5002_file.close()
@@ -85,5 +85,5 @@ def generate_focus_point_file(focus_point_path, focus_point_full_name):
 
 
 if __name__ == '__main__':
-    generate_focus_point_file("/Users/bokai/Work/FR/永不宕机/晨光/treas20200910",
-                           "/Users/bokai/Work/FR/永不宕机/晨光/treas20200910/fresultocusPoint20200910aaa.csv")
+    generate_focus_point_log_and_get_focus_point_node_pid_list_detail("/Users/bokai/Work/FR/永不宕机/treas20200910",
+                                                                      "/Users/bokai/Work/FR/永不宕机/treas20200910/resultFocusPoint20200910aaa.csv")
