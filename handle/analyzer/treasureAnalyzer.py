@@ -49,6 +49,8 @@ def start_analyze(treasure2analyze_path):
     focuspoint_file_full_name = des_result_path + os.sep + zip_file_short_name + '.focuspoint'
     # 解析reamTime文件夹 zippath/result/treas201901.reamtime.log
     real_time_usage_file_full_name = des_result_path + os.sep + zip_file_short_name + ".realtime.csv"
+    # 解析不可用时长结果
+    unavailable_time_file_full_name = des_result_path + os.sep + zip_file_short_name + ".unavailable.log"
 
     # 遍历日压缩包
     zip_dic = os.walk(zip_des_result_path)
@@ -83,6 +85,7 @@ def start_analyze(treasure2analyze_path):
         gc_record_files_path, gc_file_full_name)
     realtime_usage_node_pid_list_detail = realTimeUsage.generate_realtime_usage_and_get_node_pid_realtime_info_list_detail(
         realtime_usage_files_path, real_time_usage_file_full_name)
+    unavailableTimeAnalyzer.analyze_unavailable_time(gc_info_message_node_pid_detail, realtime_usage_node_pid_list_detail, unavailable_time_file_full_name)
     focusPoint.generate_focus_point_log_and_get_focus_point_node_pid_list_detail(focuspoint_files_path, focuspoint_file_full_name)
 
     end_time = time.time()

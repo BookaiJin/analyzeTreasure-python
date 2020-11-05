@@ -10,7 +10,6 @@ from utils.analyzeFileUtils import analyzeFileUtils
 __author__ = 'bokai'
 
 import os
-from utils.myTime import utils
 
 
 def generate_realtime_usage_and_get_node_pid_realtime_info_list_detail(realtime_usage_path, realtime_usage_fullname):
@@ -44,7 +43,7 @@ def generate_realtime_usage_and_get_node_pid_realtime_info_list_detail(realtime_
                                 realtime_usage_message = RealtimeUsage(row)
                                 realtime_usage_list_detail.append(realtime_usage_message)
                                 result_real_time_writer.writerow(realtime_usage_message.to_print_realtime_usage_log())
-                        except Exception as e:
+                        except IOError as e:
                             print("focusPoint row read failed.", filename, 'line:', reader.line_num)
                         finally:
                             j = j + 1
