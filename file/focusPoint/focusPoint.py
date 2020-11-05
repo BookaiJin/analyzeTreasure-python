@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """ main """
+from entity.focuspoint.IntellijReleaseInfoMessage import IntellijReleaseInfoMessage
+from entity.focuspoint.InterruptInfoMessage import InterruptInfoMessage
+from entity.focuspoint.LimitInfoMessage import LimitInfoMessage
+from entity.focuspoint.ShutdownInfoMessage import ShutdownInfoMessage
 
 __author__ = 'bokai'
 
@@ -83,15 +87,20 @@ def generate_focus_point_log_and_get_focus_point_node_pid_list_detail(focus_poin
                                     if row[7] != '':
                                         body = pd.json.loads(row[7])
                                         node = body.get('node')
+                                        row_result_dict['body'] = body
                                     row_result_dict['node'] = node
                                     if row_id.startswith('FR-F4002'):
-                                        focus_point_limit_file_writer.writerow(row_result_dict)
+                                        focus_point_limit_info_message = LimitInfoMessage(row_result_dict)
+                                        focus_point_limit_file_writer.writerow(focus_point_limit_info_message.to_print_focuspoint_log())
                                     if row_id.startswith('FR-F4003'):
-                                        focus_point_release_file_writer.writerow(row_result_dict)
+                                        focus_point_release_info_message = IntellijReleaseInfoMessage(row_result_dict)
+                                        focus_point_release_file_writer.writerow(focus_point_release_info_message.to_print_focuspoint_log())
                                     if row_id.startswith('FR-F4004'):
-                                        focus_point_interrupt_file_writer.writerow(row_result_dict)
+                                        focus_point_interrupt_info_message = InterruptInfoMessage(row_result_dict)
+                                        focus_point_interrupt_file_writer.writerow(focus_point_interrupt_info_message.to_print_focuspoint_log())
                                     if row_id.startswith('FR-F5002'):
-                                        focus_point_shutdown_file_writer.writerow(row_result_dict)
+                                        focus_point_shutdown_info_message = ShutdownInfoMessage(row_result_dict)
+                                        focus_point_shutdown_file_writer.writerow(focus_point_shutdown_info_message.to_print_focuspoint_log())
                     except Exception:
                         print("focusPoint row read failed.", filename, 'line:', reader.line_num)
                     finally:

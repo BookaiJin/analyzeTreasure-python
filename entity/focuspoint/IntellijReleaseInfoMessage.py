@@ -1,7 +1,7 @@
-from entity.focuspoint.BaseIntellijInfoMessage import BaseIntellijInfoMessage
+from entity.focuspoint.BaseFocuspointInfoMessage import BaseFocuspointInfoMessage
 
 
-class IntellijReleaseInfoMessage(BaseIntellijInfoMessage):
+class IntellijReleaseInfoMessage(BaseFocuspointInfoMessage):
     # 智能释放 FR-F4003
 
     def __init__(self, focus_point_info_message):
