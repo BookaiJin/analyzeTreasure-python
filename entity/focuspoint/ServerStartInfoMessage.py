@@ -1,6 +1,7 @@
-class ServerStartInfoMessage:
-    __server_start_time = 0
-    __server_pid = ' '
+from entity.focuspoint.BaseIntellijInfoMessage import BaseIntellijInfoMessage
 
-    def __init__(self):
-        pass
+
+class ServerStartInfoMessage(BaseIntellijInfoMessage):
+
+    def __init__(self, focus_point_info_message):
+        super().__init__(focus_point_info_message)

@@ -25,15 +25,33 @@ def generate_focus_point_log_and_get_focus_point_node_pid_list_detail(focus_poin
     if os.path.exists(focus_point_full_name):
         print(focus_point_full_name, ' - result gc log file already exist.')
         return
-    # 固化专用
-    focus_point_shutdown_full_name = focus_point_full_name + '.shutdown.log'
-    result_5002_file = open(focus_point_shutdown_full_name, 'w')
-    result_focus_point_log_file = open(focus_point_full_name, 'w')
+
     result_focus_point_file_header = ['id', 'time', 'date', 'node', 'username', 'source', 'text', 'title', 'body']
-    result_focus_point_writer = csv.DictWriter(result_focus_point_log_file, result_focus_point_file_header)
-    result_focus_point_writer.writeheader()
-    result_5002_file_writer = csv.DictWriter(result_5002_file, result_focus_point_file_header)
-    result_5002_file_writer.writeheader()
+
+    # 4002 限制
+    focus_point_limit_full_name = focus_point_full_name + '.limit.log'
+    focus_point_limit_file = open(focus_point_limit_full_name, 'w')
+    focus_point_limit_file_writer = csv.DictWriter(focus_point_limit_file, result_focus_point_file_header)
+    focus_point_limit_file_writer.writeheader()
+
+    # 4003 释放
+    focus_point_release_full_name = focus_point_full_name + '.release.log'
+    focus_point_release_file = open(focus_point_release_full_name, 'w')
+    focus_point_release_file_writer = csv.DictWriter(focus_point_release_file, result_focus_point_file_header)
+    focus_point_release_file_writer.writeheader()
+
+    # 4004 中止
+    focus_point_interrupt_full_name = focus_point_full_name + '.interrupt.log'
+    focus_point_interrupt_file = open(focus_point_interrupt_full_name, 'w')
+    focus_point_interrupt_file_writer = csv.DictWriter(focus_point_interrupt_file, result_focus_point_file_header)
+    focus_point_interrupt_file_writer.writeheader()
+
+    # 5002 服务器启停
+    focus_point_shutdown_full_name = focus_point_full_name + '.shutdown.log'
+    focus_point_shutdown_file = open(focus_point_shutdown_full_name, 'w')
+    focus_point_shutdown_file_writer = csv.DictWriter(focus_point_shutdown_file, result_focus_point_file_header)
+    focus_point_shutdown_file_writer.writeheader()
+
     for parent, dir_name, file_names in os.walk(focus_point_path):
         # filenames是一个list所有focuspoint文件的集合
         for filename in file_names:
@@ -66,11 +84,14 @@ def generate_focus_point_log_and_get_focus_point_node_pid_list_detail(focus_poin
                                         body = pd.json.loads(row[7])
                                         node = body.get('node')
                                     row_result_dict['node'] = node
-                                    if row_id.startswith('FR-F4002') or row_id.startswith('FR-F4003') or \
-                                            row_id.startswith('FR-F4004'):
-                                        result_focus_point_writer.writerow(row_result_dict)
+                                    if row_id.startswith('FR-F4002'):
+                                        focus_point_limit_file_writer.writerow(row_result_dict)
+                                    if row_id.startswith('FR-F4003'):
+                                        focus_point_release_file_writer.writerow(row_result_dict)
+                                    if row_id.startswith('FR-F4004'):
+                                        focus_point_interrupt_file_writer.writerow(row_result_dict)
                                     if row_id.startswith('FR-F5002'):
-                                        result_5002_file_writer.writerow(row_result_dict)
+                                        focus_point_shutdown_file_writer.writerow(row_result_dict)
                     except Exception:
                         print("focusPoint row read failed.", filename, 'line:', reader.line_num)
                     finally:
@@ -78,9 +99,13 @@ def generate_focus_point_log_and_get_focus_point_node_pid_list_detail(focus_poin
 
                 focuspoint_csv_file.close()
 
-    result_focus_point_log_file.close()
-    result_5002_file.close()
-    utils.analyzeFileUtils.analyzeFileUtils.sort_file_message(focus_point_full_name, ['node', 'time'])
+    focus_point_limit_file.close()
+    focus_point_release_file.close()
+    focus_point_interrupt_file.close()
+    focus_point_shutdown_file.close()
+    utils.analyzeFileUtils.analyzeFileUtils.sort_file_message(focus_point_limit_full_name, ['node', 'time'])
+    utils.analyzeFileUtils.analyzeFileUtils.sort_file_message(focus_point_release_full_name, ['node', 'time'])
+    utils.analyzeFileUtils.analyzeFileUtils.sort_file_message(focus_point_interrupt_full_name, ['node', 'time'])
     utils.analyzeFileUtils.analyzeFileUtils.sort_file_message(focus_point_shutdown_full_name, ['node', 'time'])
 
 
