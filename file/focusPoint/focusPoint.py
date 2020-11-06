@@ -131,42 +131,43 @@ def generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail(focuspoint_p
     focuspoint_interrupt_info_message_list.sort(key=InterruptInfoMessage.get_time)
     focuspoint_shutdown_info_message_list.sort(key=ShutdownInfoMessage.get_time)
 
-    focuspoint_limit_info_message_node_pid_list_detail = {}
+    focuspoint_limit_info_message_node_list_detail = {}
     for focuspoint_limit_info_message in focuspoint_limit_info_message_list:
         node = focuspoint_limit_info_message.get_node()
-        if node in focuspoint_limit_info_message_node_pid_list_detail:
-            focuspoint_limit_info_message_node_pid_list_detail[node].append(focuspoint_limit_info_message)
+        if node in focuspoint_limit_info_message_node_list_detail:
+            focuspoint_limit_info_message_node_list_detail[node].append(focuspoint_limit_info_message)
         else:
-            focuspoint_limit_info_message_node_pid_list_detail[node] = []
+            focuspoint_limit_info_message_node_list_detail[node] = []
 
-    focuspoint_release_info_message_node_pid_list_detail = {}
+    focuspoint_release_info_message_node_list_detail = {}
     for focuspoint_release_info_message in focuspoint_release_info_message_list:
         node = focuspoint_release_info_message.get_node()
-        if node in focuspoint_release_info_message_node_pid_list_detail:
-            focuspoint_release_info_message_node_pid_list_detail[node].append(focuspoint_release_info_message)
+        if node in focuspoint_release_info_message_node_list_detail:
+            focuspoint_release_info_message_node_list_detail[node].append(focuspoint_release_info_message)
         else:
-            focuspoint_release_info_message_node_pid_list_detail[node] = []
+            focuspoint_release_info_message_node_list_detail[node] = []
 
-    focuspoint_interrupt_info_message_node_pid_list_detail = {}
+    focuspoint_interrupt_info_message_node_list_detail = {}
     for focuspoint_interrupt_info_message in focuspoint_interrupt_info_message_list:
         node = focuspoint_interrupt_info_message.get_node()
-        if node in focuspoint_interrupt_info_message_node_pid_list_detail:
-            focuspoint_interrupt_info_message_node_pid_list_detail[node].append(focuspoint_interrupt_info_message)
+        if node in focuspoint_interrupt_info_message_node_list_detail:
+            focuspoint_interrupt_info_message_node_list_detail[node].append(focuspoint_interrupt_info_message)
         else:
-            focuspoint_interrupt_info_message_node_pid_list_detail[node] = []
+            focuspoint_interrupt_info_message_node_list_detail[node] = []
 
-    focuspoint_shutdown_info_message_node_pid_list_detail = {}
+    focuspoint_shutdown_info_message_node_pid_item_detail = {}
     for focuspoint_shutdown_info_message in focuspoint_shutdown_info_message_list:
         node = focuspoint_shutdown_info_message.get_node()
-        if node in focuspoint_shutdown_info_message_node_pid_list_detail:
-            focuspoint_shutdown_info_message_node_pid_list_detail[node].append(focuspoint_shutdown_info_message)
+        pid = focuspoint_shutdown_info_message.get_pid()
+        if node in focuspoint_shutdown_info_message_node_pid_item_detail:
+            focuspoint_shutdown_info_message_node_pid_item_detail[node][pid] = focuspoint_shutdown_info_message
         else:
-            focuspoint_shutdown_info_message_node_pid_list_detail[node] = []
+            focuspoint_shutdown_info_message_node_pid_item_detail[node] = {}
 
-    focuspoint_wrapper = FocuspointWrapper(focuspoint_limit_info_message_node_pid_list_detail,
-                                           focuspoint_release_info_message_node_pid_list_detail,
-                                           focuspoint_interrupt_info_message_node_pid_list_detail,
-                                           focuspoint_shutdown_info_message_node_pid_list_detail)
+    focuspoint_wrapper = FocuspointWrapper(focuspoint_limit_info_message_node_list_detail,
+                                           focuspoint_release_info_message_node_list_detail,
+                                           focuspoint_interrupt_info_message_node_list_detail,
+                                           focuspoint_shutdown_info_message_node_pid_item_detail)
     return focuspoint_wrapper
 
 
