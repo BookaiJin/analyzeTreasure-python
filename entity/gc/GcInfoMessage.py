@@ -27,10 +27,10 @@ class GcInfoMessage:
 
     def __init__(self, gc_record_dict):
         self.__node = gc_record_dict.get('node')
-        self.__timestamps = gc_record_dict.get('gcStartTime')
+        self.__timestamps = int(gc_record_dict.get('gcStartTime'))
         self.__gc_type = gc_record_dict.get('gcType')
         self.__gc_cause = gc_record_dict.get('gcCause')
-        self.__gc_duration = gc_record_dict.get('duration')
+        self.__gc_duration = int(gc_record_dict.get('duration'))
         self.__pid = gc_record_dict.get('pid')
         temp_time = utils.convert_time2date_timezone(self.__timestamps)
         self.__start_time = temp_time[:23] + temp_time[26:]

@@ -26,7 +26,8 @@ class RealtimeUsage:
             self.__realtime_usage_dict['bufferMemUse'] = row[12]
             self.__realtime_usage_dict['physicalMemUse'] = row[13]
             self.__realtime_usage_dict['physicalMemFree'] = row[14]
-            self.__physical_mem_free = int(self.__realtime_usage_dict['physicalMemFree'])
+            if self.__realtime_usage_dict['physicalMemFree'] != '':
+                self.__physical_mem_free = int(self.__realtime_usage_dict['physicalMemFree'])
         self.__node = self.__realtime_usage_dict['node']
         self.__timestamps = int(self.__realtime_usage_dict['time'])
         self.__pid = self.__realtime_usage_dict['pid']
