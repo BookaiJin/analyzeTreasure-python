@@ -85,16 +85,16 @@ def start_analyze(treasure2analyze_path):
         gc_record_files_path, gc_file_full_name)
     realtime_usage_node_pid_list_detail = realTimeUsage.generate_realtime_usage_and_get_node_pid_realtime_info_list_detail(
         realtime_usage_files_path, real_time_usage_file_full_name)
-    unavailableTimeAnalyzer.analyze_unavailable_time(gc_info_message_node_pid_detail, realtime_usage_node_pid_list_detail, unavailable_time_file_full_name)
-    focusPoint.generate_focus_point_log_and_get_focus_point_node_pid_list_detail(focuspoint_files_path, focuspoint_file_full_name)
+    focuspoint_wrapper = focusPoint.generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail(focuspoint_files_path,
+                                                                                                    focuspoint_file_full_name)
 
     end_time = time.time()
     print('total time:', (end_time - start_time) * 1000, 'ms')
     print('不可用时长分析')
 
-    unavailableTimeAnalyzer.analyze_unavailable_time(gc_info_message_node_pid_detail, realtime_usage_node_pid_list_detail)
+    unavailableTimeAnalyzer.analyze_unavailable_time(gc_info_message_node_pid_detail, realtime_usage_node_pid_list_detail,
+                                                     focuspoint_wrapper, unavailable_time_file_full_name)
 
-
-if __name__ == '__main__':
-    treasure_path = input('输入treasure文件路径: ')
-    start_analyze(treasure_path)
+    if __name__ == '__main__':
+        treasure_path = input('输入treasure文件路径: ')
+        start_analyze(treasure_path)

@@ -7,7 +7,8 @@ from entity.down.DownInfoBean import DownInfoBean
 __author__ = 'bokai'
 
 
-def analyze_unavailable_time(gc_info_message_node_pid_list_detail, realtime_usage_node_pid_list_detail, unavailable_time_file_full_name):
+def analyze_unavailable_time(gc_info_message_node_pid_list_detail, realtime_usage_node_pid_list_detail,
+                             focuspoint_wrapper, unavailable_time_file_full_name):
     if len(gc_info_message_node_pid_list_detail) == 1:
         gc_info_message_pid_list_detail = gc_info_message_node_pid_list_detail['']
         down_times = len(gc_info_message_pid_list_detail)

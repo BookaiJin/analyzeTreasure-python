@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """ main """
-from entity.focuspoint.IntellijReleaseInfoMessage import IntellijReleaseInfoMessage
-from entity.focuspoint.InterruptInfoMessage import InterruptInfoMessage
-from entity.focuspoint.LimitInfoMessage import LimitInfoMessage
-from entity.focuspoint.ShutdownInfoMessage import ShutdownInfoMessage
+from entity.focuspoint.box.FocuspointWrapper import FocuspointWrapper
+from entity.focuspoint.message.IntellijReleaseInfoMessage import IntellijReleaseInfoMessage
+from entity.focuspoint.message.InterruptInfoMessage import InterruptInfoMessage
+from entity.focuspoint.message.LimitInfoMessage import LimitInfoMessage
+from entity.focuspoint.message.ShutdownInfoMessage import ShutdownInfoMessage
 
 __author__ = 'bokai'
 
@@ -22,41 +23,45 @@ import pandas as pd
 # zip_path/result/treas201901.focuspoint.csv
 
 
-def generate_focus_point_log_and_get_focus_point_node_pid_list_detail(focus_point_path, focus_point_full_name):
-    if not os.path.exists(focus_point_path):
+def generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail(focuspoint_path, focuspoint_full_name):
+    if not os.path.exists(focuspoint_path):
         print('这个版本的treas包没有FocusPoint表. fu*k u again')
         return
-    if os.path.exists(focus_point_full_name):
-        print(focus_point_full_name, ' - result gc log file already exist.')
+    if os.path.exists(focuspoint_full_name):
+        print(focuspoint_full_name, ' - result gc log file already exist.')
         return
 
-    result_focus_point_file_header = ['id', 'time', 'date', 'node', 'username', 'source', 'text', 'title', 'body']
+    result_focuspoint_file_header = ['id', 'time', 'date', 'node', 'username', 'source', 'text', 'title', 'body']
 
     # 4002 限制
-    focus_point_limit_full_name = focus_point_full_name + '.limit.log'
-    focus_point_limit_file = open(focus_point_limit_full_name, 'w')
-    focus_point_limit_file_writer = csv.DictWriter(focus_point_limit_file, result_focus_point_file_header)
-    focus_point_limit_file_writer.writeheader()
+    focuspoint_limit_full_name = focuspoint_full_name + '.limit.log'
+    focuspoint_limit_file = open(focuspoint_limit_full_name, 'w')
+    focuspoint_limit_file_writer = csv.DictWriter(focuspoint_limit_file, result_focuspoint_file_header)
+    focuspoint_limit_file_writer.writeheader()
+    focuspoint_limit_info_message_list = []
 
     # 4003 释放
-    focus_point_release_full_name = focus_point_full_name + '.release.log'
-    focus_point_release_file = open(focus_point_release_full_name, 'w')
-    focus_point_release_file_writer = csv.DictWriter(focus_point_release_file, result_focus_point_file_header)
-    focus_point_release_file_writer.writeheader()
+    focuspoint_release_full_name = focuspoint_full_name + '.release.log'
+    focuspoint_release_file = open(focuspoint_release_full_name, 'w')
+    focuspoint_release_file_writer = csv.DictWriter(focuspoint_release_file, result_focuspoint_file_header)
+    focuspoint_release_file_writer.writeheader()
+    focuspoint_release_info_message_list = []
 
     # 4004 中止
-    focus_point_interrupt_full_name = focus_point_full_name + '.interrupt.log'
-    focus_point_interrupt_file = open(focus_point_interrupt_full_name, 'w')
-    focus_point_interrupt_file_writer = csv.DictWriter(focus_point_interrupt_file, result_focus_point_file_header)
-    focus_point_interrupt_file_writer.writeheader()
+    focuspoint_interrupt_full_name = focuspoint_full_name + '.interrupt.log'
+    focuspoint_interrupt_file = open(focuspoint_interrupt_full_name, 'w')
+    focuspoint_interrupt_file_writer = csv.DictWriter(focuspoint_interrupt_file, result_focuspoint_file_header)
+    focuspoint_interrupt_file_writer.writeheader()
+    focuspoint_interrupt_info_message_list = []
 
     # 5002 服务器启停
-    focus_point_shutdown_full_name = focus_point_full_name + '.shutdown.log'
-    focus_point_shutdown_file = open(focus_point_shutdown_full_name, 'w')
-    focus_point_shutdown_file_writer = csv.DictWriter(focus_point_shutdown_file, result_focus_point_file_header)
-    focus_point_shutdown_file_writer.writeheader()
+    focuspoint_shutdown_full_name = focuspoint_full_name + '.shutdown.log'
+    focuspoint_shutdown_file = open(focuspoint_shutdown_full_name, 'w')
+    focuspoint_shutdown_file_writer = csv.DictWriter(focuspoint_shutdown_file, result_focuspoint_file_header)
+    focuspoint_shutdown_file_writer.writeheader()
+    focuspoint_shutdown_info_message_list = []
 
-    for parent, dir_name, file_names in os.walk(focus_point_path):
+    for parent, dir_name, file_names in os.walk(focuspoint_path):
         # filenames是一个list所有focuspoint文件的集合
         for filename in file_names:
             if filename.startswith('focusPoint') and filename.endswith('.csv'):
@@ -90,17 +95,21 @@ def generate_focus_point_log_and_get_focus_point_node_pid_list_detail(focus_poin
                                         row_result_dict['body'] = body
                                     row_result_dict['node'] = node
                                     if row_id.startswith('FR-F4002'):
-                                        focus_point_limit_info_message = LimitInfoMessage(row_result_dict)
-                                        focus_point_limit_file_writer.writerow(focus_point_limit_info_message.to_print_focuspoint_log())
+                                        focuspoint_limit_info_message = LimitInfoMessage(row_result_dict)
+                                        focuspoint_limit_info_message_list.append(focuspoint_limit_info_message)
+                                        focuspoint_limit_file_writer.writerow(focuspoint_limit_info_message.to_print_focuspoint_log())
                                     if row_id.startswith('FR-F4003'):
-                                        focus_point_release_info_message = IntellijReleaseInfoMessage(row_result_dict)
-                                        focus_point_release_file_writer.writerow(focus_point_release_info_message.to_print_focuspoint_log())
+                                        focuspoint_release_info_message = IntellijReleaseInfoMessage(row_result_dict)
+                                        focuspoint_release_info_message_list.append(focuspoint_release_info_message)
+                                        focuspoint_release_file_writer.writerow(focuspoint_release_info_message.to_print_focuspoint_log())
                                     if row_id.startswith('FR-F4004'):
-                                        focus_point_interrupt_info_message = InterruptInfoMessage(row_result_dict)
-                                        focus_point_interrupt_file_writer.writerow(focus_point_interrupt_info_message.to_print_focuspoint_log())
+                                        focuspoint_interrupt_info_message = InterruptInfoMessage(row_result_dict)
+                                        focuspoint_interrupt_info_message_list.append(focuspoint_interrupt_info_message)
+                                        focuspoint_interrupt_file_writer.writerow(focuspoint_interrupt_info_message.to_print_focuspoint_log())
                                     if row_id.startswith('FR-F5002'):
-                                        focus_point_shutdown_info_message = ShutdownInfoMessage(row_result_dict)
-                                        focus_point_shutdown_file_writer.writerow(focus_point_shutdown_info_message.to_print_focuspoint_log())
+                                        focuspoint_shutdown_info_message = ShutdownInfoMessage(row_result_dict)
+                                        focuspoint_shutdown_info_message_list.append(focuspoint_shutdown_info_message)
+                                        focuspoint_shutdown_file_writer.writerow(focuspoint_shutdown_info_message.to_print_focuspoint_log())
                     except Exception:
                         print("focusPoint row read failed.", filename, 'line:', reader.line_num)
                     finally:
@@ -108,16 +117,59 @@ def generate_focus_point_log_and_get_focus_point_node_pid_list_detail(focus_poin
 
                 focuspoint_csv_file.close()
 
-    focus_point_limit_file.close()
-    focus_point_release_file.close()
-    focus_point_interrupt_file.close()
-    focus_point_shutdown_file.close()
-    utils.analyzeFileUtils.analyzeFileUtils.sort_file_message(focus_point_limit_full_name, ['node', 'time'])
-    utils.analyzeFileUtils.analyzeFileUtils.sort_file_message(focus_point_release_full_name, ['node', 'time'])
-    utils.analyzeFileUtils.analyzeFileUtils.sort_file_message(focus_point_interrupt_full_name, ['node', 'time'])
-    utils.analyzeFileUtils.analyzeFileUtils.sort_file_message(focus_point_shutdown_full_name, ['node', 'time'])
+    focuspoint_limit_file.close()
+    focuspoint_release_file.close()
+    focuspoint_interrupt_file.close()
+    focuspoint_shutdown_file.close()
+    utils.analyzeFileUtils.analyzeFileUtils.sort_file_message(focuspoint_limit_full_name, ['node', 'time'])
+    utils.analyzeFileUtils.analyzeFileUtils.sort_file_message(focuspoint_release_full_name, ['node', 'time'])
+    utils.analyzeFileUtils.analyzeFileUtils.sort_file_message(focuspoint_interrupt_full_name, ['node', 'time'])
+    utils.analyzeFileUtils.analyzeFileUtils.sort_file_message(focuspoint_shutdown_full_name, ['node', 'time'])
+
+    focuspoint_limit_info_message_list.sort(key=LimitInfoMessage.get_time)
+    focuspoint_release_info_message_list.sort(key=IntellijReleaseInfoMessage.get_time)
+    focuspoint_interrupt_info_message_list.sort(key=InterruptInfoMessage.get_time)
+    focuspoint_shutdown_info_message_list.sort(key=ShutdownInfoMessage.get_time)
+
+    focuspoint_limit_info_message_node_pid_list_detail = {}
+    for focuspoint_limit_info_message in focuspoint_limit_info_message_list:
+        node = focuspoint_limit_info_message.get_node()
+        if node in focuspoint_limit_info_message_node_pid_list_detail:
+            focuspoint_limit_info_message_node_pid_list_detail[node].append(focuspoint_limit_info_message)
+        else:
+            focuspoint_limit_info_message_node_pid_list_detail[node] = []
+
+    focuspoint_release_info_message_node_pid_list_detail = {}
+    for focuspoint_release_info_message in focuspoint_release_info_message_list:
+        node = focuspoint_release_info_message.get_node()
+        if node in focuspoint_release_info_message_node_pid_list_detail:
+            focuspoint_release_info_message_node_pid_list_detail[node].append(focuspoint_release_info_message)
+        else:
+            focuspoint_release_info_message_node_pid_list_detail[node] = []
+
+    focuspoint_interrupt_info_message_node_pid_list_detail = {}
+    for focuspoint_interrupt_info_message in focuspoint_interrupt_info_message_list:
+        node = focuspoint_interrupt_info_message.get_node()
+        if node in focuspoint_interrupt_info_message_node_pid_list_detail:
+            focuspoint_interrupt_info_message_node_pid_list_detail[node].append(focuspoint_interrupt_info_message)
+        else:
+            focuspoint_interrupt_info_message_node_pid_list_detail[node] = []
+
+    focuspoint_shutdown_info_message_node_pid_list_detail = {}
+    for focuspoint_shutdown_info_message in focuspoint_shutdown_info_message_list:
+        node = focuspoint_shutdown_info_message.get_node()
+        if node in focuspoint_shutdown_info_message_node_pid_list_detail:
+            focuspoint_shutdown_info_message_node_pid_list_detail[node].append(focuspoint_shutdown_info_message)
+        else:
+            focuspoint_shutdown_info_message_node_pid_list_detail[node] = []
+
+    focuspoint_wrapper = FocuspointWrapper(focuspoint_limit_info_message_node_pid_list_detail,
+                                           focuspoint_release_info_message_node_pid_list_detail,
+                                           focuspoint_interrupt_info_message_node_pid_list_detail,
+                                           focuspoint_shutdown_info_message_node_pid_list_detail)
+    return focuspoint_wrapper
 
 
 if __name__ == '__main__':
-    generate_focus_point_log_and_get_focus_point_node_pid_list_detail("/Users/bokai/Work/FR/永不宕机/treas20200910",
-                                                                      "/Users/bokai/Work/FR/永不宕机/treas20200910/resultFocusPoint20200910aaa.csv")
+    generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail("/Users/bokai/Work/FR/永不宕机/treas20200910",
+                                                                    "/Users/bokai/Work/FR/永不宕机/treas20200910/resultFocusPoint20200910aaa.csv")
