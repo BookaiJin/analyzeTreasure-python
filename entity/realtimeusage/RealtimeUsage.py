@@ -5,6 +5,7 @@ class RealtimeUsage:
     __node = '0'
     __timestamps = 0
     __pid = '0'
+    __physical_mem_free = 0
     __realtime_usage_dict = {}
 
     def __init__(self, row):
@@ -25,6 +26,7 @@ class RealtimeUsage:
             self.__realtime_usage_dict['bufferMemUse'] = row[12]
             self.__realtime_usage_dict['physicalMemUse'] = row[13]
             self.__realtime_usage_dict['physicalMemFree'] = row[14]
+            self.__physical_mem_free = self.__realtime_usage_dict['physicalMemFree']
         self.__node = self.__realtime_usage_dict['node']
         self.__timestamps = self.__realtime_usage_dict['time']
         self.__pid = self.__realtime_usage_dict['pid']
@@ -40,3 +42,6 @@ class RealtimeUsage:
 
     def get_pid(self):
         return self.__pid
+
+    def get_physical_mem_free(self):
+        return self.__physical_mem_free

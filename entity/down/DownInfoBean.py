@@ -1,3 +1,7 @@
+from entity.gc.GcInfoMessage import GcInfoMessage
+from entity.realtimeusage.RealtimeUsage import RealtimeUsage
+
+
 class DownInfoBean:
     # 宕机开始时间，开始不可用时间戳
     __down_start_time = 0
@@ -13,11 +17,16 @@ class DownInfoBean:
     __restart_pid = ''
     # 宕机前用户目录
     __user_dir = ''
+    # 关闭信号量
+    __signal_name = ''
 
     def __init__(self, down_gc_list, restart_gc_list, down_realtime_list, down_shutdown_info_message, restart_shutdown_info_message):
-        # 宕机前工作目录
+        # 宕机前工作目录 信号量
         if down_shutdown_info_message is not None:
+            # 宕机前运行的工作目录
             self.__user_dir = down_shutdown_info_message.get_user_dir()
+            # 记录的关机信号量
+            self.__signal_name = down_shutdown_info_message.get_signal_name()
 
         # 宕机重启可用时间
         if restart_shutdown_info_message is not None:
@@ -25,7 +34,22 @@ class DownInfoBean:
         else:
             self.__down_end_time = int(restart_gc_list[0].get_timestamps())
 
+        # 宕机开始时间
         self.__down_start_time = int(down_gc_list[-1].get_timestamps())
+
+        # 宕机类型 xmx-oom xcpu offheap term
+        if self.is_xmx_oom(down_gc_list):
+            # 十分钟有三分钟 xmx-oom
+            self.__down_type = "Xmx-OOM"
+        elif self.is_xcpu(down_realtime_list):
+            # 最后十分钟有八分钟 CPU高于
+            self.__down_type = "XCPU"
+        elif self.is_off_heap(down_realtime_list[-1]):
+            # 信号量OOM 或者 realtime最后物理内存小于1M
+            self.__down_type = "OFFHEAP"
+        else:
+            self.__down_type = 'TERM'
+
         self.__down_pid = down_gc_list[0].get_pid()
         self.__restart_pid = restart_gc_list[0].get_pid()
         self.__duration = self.__down_end_time - self.__down_start_time
@@ -44,3 +68,23 @@ class DownInfoBean:
 
     def get_user_dir(self):
         return self.__user_dir
+
+    def get_signal_name(self):
+        return self.__signal_name
+
+    def is_off_heap(self, last_realtime_info_message):
+        return self.__signal_name == 'OOM' or (
+                0 < last_realtime_info_message.get_physical_mem_free() < 1024)
+
+    def is_xcpu(self, down_realtime_list):
+        # 最后一条realtime的时间
+        down_realtime_list.sort(key=RealtimeUsage.get_timestamps, reverse=True)
+        last_realtime_time = down_realtime_list[0].get_timestamps()
+        return True
+
+    def is_xmx_oom(self, down_gc_list):
+        down_gc_list.sort(key=GcInfoMessage.get_timestamps, reverse=True)
+        down_start_time = down_gc_list[0].get_timestamps()
+        last_gc_time = down_gc_list[0].get_timestamps()
+        self.__down_start_time = down_start_time
+        return True
