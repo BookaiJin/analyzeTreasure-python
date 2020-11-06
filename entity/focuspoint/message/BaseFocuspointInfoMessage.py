@@ -22,7 +22,7 @@ class BaseFocuspointInfoMessage:
 
     def __init__(self, focuspoint_info_message):
         self._id = focuspoint_info_message['id']
-        self._time = focuspoint_info_message['time']
+        self._time = int(focuspoint_info_message['time'])
         self._date = focuspoint_info_message['date']
         self._username = focuspoint_info_message['username']
         self._source = focuspoint_info_message['source']

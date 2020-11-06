@@ -32,10 +32,10 @@ class DownInfoBean:
         if restart_shutdown_info_message is not None:
             self.__down_end_time = restart_shutdown_info_message.get_available_time()
         else:
-            self.__down_end_time = int(restart_gc_list[0].get_timestamps())
+            self.__down_end_time = restart_gc_list[0].get_timestamps()
 
         # 宕机开始时间
-        self.__down_start_time = int(down_gc_list[-1].get_timestamps())
+        self.__down_start_time = down_gc_list[-1].get_timestamps()
 
         # 宕机类型 xmx-oom xcpu offheap term
         if self.is_xmx_oom(down_gc_list):
@@ -80,11 +80,11 @@ class DownInfoBean:
         # 最后一条realtime的时间
         down_realtime_list.sort(key=RealtimeUsage.get_timestamps, reverse=True)
         last_realtime_time = down_realtime_list[0].get_timestamps()
-        return True
+        return False
 
     def is_xmx_oom(self, down_gc_list):
         down_gc_list.sort(key=GcInfoMessage.get_timestamps, reverse=True)
         down_start_time = down_gc_list[0].get_timestamps()
         last_gc_time = down_gc_list[0].get_timestamps()
         self.__down_start_time = down_start_time
-        return True
+        return False
