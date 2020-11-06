@@ -171,5 +171,6 @@ def generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail(focuspoint_p
 
 
 if __name__ == '__main__':
-    generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail("/Users/bokai/Work/FR/永不宕机/treas20200910",
-                                                                    "/Users/bokai/Work/FR/永不宕机/treas20200910/resultFocusPoint20200910aaa.csv")
+    pass
+    # generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail("/Users/bokai/Work/FR/永不宕机/treas20200910",
+    #                                                                 "/Users/bokai/Work/FR/永不宕机/treas20200910/resultFocusPoint20200910aaa.csv")

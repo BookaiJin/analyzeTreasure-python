@@ -90,10 +90,13 @@ def start_analyze(treasure2analyze_path):
 
     end_time = time.time()
     print('total time:', (end_time - start_time) * 1000, 'ms')
-    print('不可用时长分析')
 
+    print('不可用时长分析')
+    unavailable_start_time = time.time()
     unavailableTimeAnalyzer.analyze_unavailable_time(gc_info_message_node_pid_detail, realtime_usage_node_pid_list_detail,
                                                      focuspoint_wrapper, unavailable_time_file_full_name)
+    unavailable_end_time = time.time()
+    print('total time:', (unavailable_end_time - unavailable_start_time) * 1000, 'ms')
 
     if __name__ == '__main__':
         treasure_path = input('输入treasure文件路径: ')
