@@ -9,8 +9,9 @@ __author__ = 'bokai'
 
 def analyze_unavailable_time(gc_info_message_node_pid_list_detail, realtime_usage_node_pid_list_detail,
                              focuspoint_wrapper, unavailable_time_file_full_name):
-    if len(gc_info_message_node_pid_list_detail) == 1:
-        gc_info_message_pid_list_detail = gc_info_message_node_pid_list_detail['']
+    # 集群也要考虑
+    for node in gc_info_message_node_pid_list_detail.keys():
+        gc_info_message_pid_list_detail = gc_info_message_node_pid_list_detail[node]
         down_times = len(gc_info_message_pid_list_detail)
         down_info_message_list = []
         pids = [key for key, value in gc_info_message_pid_list_detail.items()]
@@ -22,7 +23,7 @@ def analyze_unavailable_time(gc_info_message_node_pid_list_detail, realtime_usag
             down_info_message_list.append(down_info_message)
 
         unavailable_time_file = open(unavailable_time_file_full_name, "w")
-        unavailable_time_file.write("重启总次数: " + str(len(down_info_message_list)) + "\n")
+        unavailable_time_file.write("节点- " + node + " -重启总次数: " + str(len(down_info_message_list)) + "\n")
         log_header = ['No', 'duration-秒', 'duration-时', 'down_type']
         log_format = "<15"
         for string in log_header:
@@ -38,7 +39,3 @@ def analyze_unavailable_time(gc_info_message_node_pid_list_detail, realtime_usag
             unavailable_time_file.write("\n")
 
         unavailable_time_file.close()
-
-    else:
-        # 集群怎么说
-        pass
