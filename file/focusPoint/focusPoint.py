@@ -155,19 +155,19 @@ def generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail(focuspoint_p
         else:
             focuspoint_interrupt_info_message_node_list_detail[node] = []
 
-    focuspoint_shutdown_info_message_node_pid_item_detail = {}
+    focuspoint_shutdown_info_message_node_pid_item = {}
     for focuspoint_shutdown_info_message in focuspoint_shutdown_info_message_list:
         node = focuspoint_shutdown_info_message.get_node()
         pid = focuspoint_shutdown_info_message.get_pid()
-        if node in focuspoint_shutdown_info_message_node_pid_item_detail:
-            focuspoint_shutdown_info_message_node_pid_item_detail[node][pid] = focuspoint_shutdown_info_message
+        if node in focuspoint_shutdown_info_message_node_pid_item:
+            focuspoint_shutdown_info_message_node_pid_item[node][pid] = focuspoint_shutdown_info_message
         else:
-            focuspoint_shutdown_info_message_node_pid_item_detail[node] = {}
+            focuspoint_shutdown_info_message_node_pid_item[node] = {}
 
     focuspoint_wrapper = FocuspointWrapper(focuspoint_limit_info_message_node_list_detail,
                                            focuspoint_release_info_message_node_list_detail,
                                            focuspoint_interrupt_info_message_node_list_detail,
-                                           focuspoint_shutdown_info_message_node_pid_item_detail)
+                                           focuspoint_shutdown_info_message_node_pid_item)
     return focuspoint_wrapper
 
 
