@@ -107,11 +107,17 @@ class DownInfoBean:
         for gc_info_message in down_gc_list:
             if last_gc_time - gc_info_message.get_timestamps() > 10 * 60 * 1000:
                 break
-            if last_gc_time.get_gc_type == 'Full GC':
+            if last_gc_time.get_gc_type is 'Full GC':
                 last_10_gc_duration += gc_info_message.get_duration()
             last_10_gc_times += 1
-        if last_10_gc_duration > 3 * 60 * 1000:
+        if last_10_gc_duration > 3 * 60 * 1000 and down_gc_list[last_10_gc_times].get_gc_type is 'Full GC':
             self.__down_type = 'Xmx-OOM'
+            down_gc_list = down_gc_list[last_10_gc_times:]
+            for gc_info_message in down_gc_list:
+                if gc_info_message.get_gc_type() is 'Full GC':
+                    self.__down_start_time = gc_info_message.get_timestamps
+                else:
+                    break
         # 往前
         self.__down_start_time = down_start_time
         return False
