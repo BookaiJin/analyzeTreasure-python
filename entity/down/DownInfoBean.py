@@ -98,7 +98,6 @@ class DownInfoBean:
 
     def is_xmx_oom(self, down_gc_list):
         down_gc_list.sort(key=GcInfoMessage.get_timestamps, reverse=True)
-        down_start_time = down_gc_list[0].get_timestamps()
         # 列表最后一条gc时间的时间戳
         last_gc_time = down_gc_list[0].get_timestamps()
         # 最后十分钟gc持续时长
@@ -107,17 +106,18 @@ class DownInfoBean:
         for gc_info_message in down_gc_list:
             if last_gc_time - gc_info_message.get_timestamps() > 10 * 60 * 1000:
                 break
-            if last_gc_time.get_gc_type is 'Full GC':
+            if gc_info_message.get_gc_type() is 'Full GC':
                 last_10_gc_duration += gc_info_message.get_duration()
             last_10_gc_times += 1
-        if last_10_gc_duration > 3 * 60 * 1000 and down_gc_list[last_10_gc_times].get_gc_type is 'Full GC':
+        if last_10_gc_duration > 3 * 60 * 1000:
             self.__down_type = 'Xmx-OOM'
-            down_gc_list = down_gc_list[last_10_gc_times:]
-            for gc_info_message in down_gc_list:
-                if gc_info_message.get_gc_type() is 'Full GC':
-                    self.__down_start_time = gc_info_message.get_timestamps
-                else:
-                    break
-        # 往前
-        self.__down_start_time = down_start_time
+            # 判断为宕机之后，最后一条为full gc，继续往前索引，找到连续full gc的第一条
+            if down_gc_list[last_10_gc_times].get_gc_type() is 'Full GC':
+                down_gc_list = down_gc_list[last_10_gc_times:]
+                for gc_info_message in down_gc_list:
+                    if gc_info_message.get_gc_type() is 'Full GC':
+                        self.__down_start_time = gc_info_message.get_timestamps
+                    else:
+                        break
+            return True
         return False
