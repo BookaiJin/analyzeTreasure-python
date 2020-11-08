@@ -103,13 +103,15 @@ class DownInfoBean:
         last_gc_time = down_gc_list[0].get_timestamps()
         # 最后十分钟gc持续时长
         last_10_gc_duration = 0
+        last_10_gc_times = 0
         for gc_info_message in down_gc_list:
             if last_gc_time - gc_info_message.get_timestamps() > 10 * 60 * 1000:
                 break
             if last_gc_time.get_gc_type == 'Full GC':
                 last_10_gc_duration += gc_info_message.get_duration()
-        if last_10_gc_duration > 3 * 60 * 1000
+            last_10_gc_times += 1
+        if last_10_gc_duration > 3 * 60 * 1000:
             self.__down_type = 'Xmx-OOM'
-            # 往前
+        # 往前
         self.__down_start_time = down_start_time
         return False
