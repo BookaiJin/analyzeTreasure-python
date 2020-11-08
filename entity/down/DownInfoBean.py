@@ -1,12 +1,15 @@
 from entity.gc.GcInfoMessage import GcInfoMessage
 from entity.realtimeusage.RealtimeUsage import RealtimeUsage
+from utils.myTime import utils
 
 
 class DownInfoBean:
     # 宕机开始时间，开始不可用时间戳
-    __down_start_time = 0
+    __down_start_timestamps = 0
     # 宕机结束时间，开始使用时时间戳
-    __down_end_time = 0
+    __down_end_timestamps = 0
+    # 宕机可读时间节点
+    __down_start_time = ''
     # 宕机持续时间 ms
     __duration = 0
     # 宕机类别
@@ -30,12 +33,13 @@ class DownInfoBean:
 
         # 宕机重启可用时间
         if restart_shutdown_info_message is not None:
-            self.__down_end_time = restart_shutdown_info_message.get_available_time()
+            self.__down_end_timestamps = restart_shutdown_info_message.get_available_time()
         else:
-            self.__down_end_time = restart_gc_list[0].get_timestamps()
+            self.__down_end_timestamps = restart_gc_list[0].get_timestamps()
+            self.__down_time = utils.convert_time_to_date(self.__down_end_timestamps)
 
         # 宕机开始时间
-        self.__down_start_time = down_gc_list[-1].get_timestamps()
+        self.__down_start_timestamps = down_gc_list[-1].get_timestamps()
 
         # 宕机类型 xmx-oom xcpu offheap term
         if self.is_xmx_oom(down_gc_list):
@@ -52,7 +56,7 @@ class DownInfoBean:
 
         self.__down_pid = down_gc_list[0].get_pid()
         self.__restart_pid = restart_gc_list[0].get_pid()
-        self.__duration = self.__down_end_time - self.__down_start_time
+        self.__duration = self.__down_end_timestamps - self.__down_start_timestamps
 
     def get_duration(self):
         return self.__duration
@@ -72,6 +76,9 @@ class DownInfoBean:
     def get_signal_name(self):
         return self.__signal_name
 
+    def get_down_start_time(self):
+        return self.__down_start_time
+
     def is_off_heap(self, last_realtime_info_message):
         return self.__signal_name == 'OOM' or (
                 0 < last_realtime_info_message.get_physical_mem_free() < 1024)
@@ -89,9 +96,8 @@ class DownInfoBean:
             if realtime_usage_info_message.get_cpu() > 0.95:
                 high_cpu_times += 1
             total_cpu_times += 1
-            down_realtime_list.remove()
         if high_cpu_times / total_cpu_times > 0.8:
-            self.__down_start_time = last_realtime_time
+            self.__down_start_timestamps = last_realtime_time
             return True
         else:
             return False
@@ -116,7 +122,7 @@ class DownInfoBean:
                 down_gc_list = down_gc_list[last_10_gc_times:]
                 for gc_info_message in down_gc_list:
                     if gc_info_message.get_gc_type() is 'Full GC':
-                        self.__down_start_time = gc_info_message.get_timestamps
+                        self.__down_start_timestamps = gc_info_message.get_timestamps
                     else:
                         break
             return True

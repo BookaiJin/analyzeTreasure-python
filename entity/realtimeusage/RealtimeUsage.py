@@ -32,7 +32,7 @@ class RealtimeUsage:
         self.__node = self.__realtime_usage_dict['node']
         self.__timestamps = int(self.__realtime_usage_dict['time'])
         self.__pid = self.__realtime_usage_dict['pid']
-        self.__cpu = self.__realtime_usage_dict['cpu']
+        self.__cpu = float(self.__realtime_usage_dict['cpu'])
 
     def to_print_realtime_usage_log(self):
         return self.__realtime_usage_dict

@@ -80,3 +80,6 @@ class GcInfoMessage:
 
     def get_timestamps(self):
         return self.__timestamps
+
+    def get_gc_type(self):
+        return self.__gc_type

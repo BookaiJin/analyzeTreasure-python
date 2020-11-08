@@ -29,7 +29,15 @@ def analyze_unavailable_time(gc_info_message_node_pid_list_detail, realtime_usag
 
         unavailable_time_file = open(unavailable_time_file_full_name, "w")
         unavailable_time_file.write("节点- " + node + " -重启总次数: " + str(len(down_info_message_list)) + "\n")
-        log_header = ['No', 'duration-s', 'duration-h', 'down_pid', 'restart_pid', 'predict_down_type', 'down_user_dir', 'record_down_type']
+        log_header = ['No',
+                      'restart-time',
+                      'duration-s',
+                      'duration-h',
+                      'down_pid',
+                      'restart_pid',
+                      'predict_down_type',
+                      'down_user_dir',
+                      'record_down_type']
         log_format = "<30"
         for string in log_header:
             unavailable_time_file.write(format(string, log_format))
@@ -39,6 +47,7 @@ def analyze_unavailable_time(gc_info_message_node_pid_list_detail, realtime_usag
             duration = down_info_message.get_duration() / 1000
             log_item = [
                 i,
+                down_info_message.get_down_start_time(),
                 '%.0f' % duration,
                 ('%.5f' % (duration / 3600)),
                 down_info_message.get_down_pid(),
