@@ -108,5 +108,8 @@ class DownInfoBean:
                 break
             if last_gc_time.get_gc_type == 'Full GC':
                 last_10_gc_duration += gc_info_message.get_duration()
+        if last_10_gc_duration > 3 * 60 * 1000
+            self.__down_type = 'Xmx-OOM'
+            # 往前
         self.__down_start_time = down_start_time
         return False
