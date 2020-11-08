@@ -77,10 +77,24 @@ class DownInfoBean:
                 0 < last_realtime_info_message.get_physical_mem_free() < 1024)
 
     def is_xcpu(self, down_realtime_list):
+        # 最后十分钟的realtime记录点80%的CPU高于0.9即为CPU宕机
         # 最后一条realtime的时间
         down_realtime_list.sort(key=RealtimeUsage.get_timestamps, reverse=True)
         last_realtime_time = down_realtime_list[0].get_timestamps()
-        return False
+        total_cpu_times = 0
+        high_cpu_times = 0
+        for realtime_usage_info_message in down_realtime_list:
+            if last_realtime_time - realtime_usage_info_message.get_timestamps() > 10 * 60 * 1000:
+                break
+            if realtime_usage_info_message.get_cpu() > 0.95:
+                high_cpu_times += 1
+            total_cpu_times += 1
+            down_realtime_list.remove()
+        if high_cpu_times / total_cpu_times > 0.8:
+            self.__down_start_time = last_realtime_time
+            return True
+        else:
+            return False
 
     def is_xmx_oom(self, down_gc_list):
         down_gc_list.sort(key=GcInfoMessage.get_timestamps, reverse=True)

@@ -5,6 +5,7 @@ class RealtimeUsage:
     __node = '0'
     __timestamps = 0
     __pid = '0'
+    __cpu = 0.0
     __physical_mem_free = 0
     __realtime_usage_dict = {}
 
@@ -31,6 +32,7 @@ class RealtimeUsage:
         self.__node = self.__realtime_usage_dict['node']
         self.__timestamps = int(self.__realtime_usage_dict['time'])
         self.__pid = self.__realtime_usage_dict['pid']
+        self.__cpu = self.__realtime_usage_dict['cpu']
 
     def to_print_realtime_usage_log(self):
         return self.__realtime_usage_dict
@@ -46,3 +48,6 @@ class RealtimeUsage:
 
     def get_physical_mem_free(self):
         return self.__physical_mem_free
+
+    def get_cpu(self):
+        return self.__cpu
