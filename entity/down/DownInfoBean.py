@@ -99,6 +99,14 @@ class DownInfoBean:
     def is_xmx_oom(self, down_gc_list):
         down_gc_list.sort(key=GcInfoMessage.get_timestamps, reverse=True)
         down_start_time = down_gc_list[0].get_timestamps()
+        # 列表最后一条gc时间的时间戳
         last_gc_time = down_gc_list[0].get_timestamps()
+        # 最后十分钟gc持续时长
+        last_10_gc_duration = 0
+        for gc_info_message in down_gc_list:
+            if last_gc_time - gc_info_message.get_timestamps() > 10 * 60 * 1000:
+                break
+            if last_gc_time.get_gc_type == 'Full GC':
+                last_10_gc_duration += gc_info_message.get_duration()
         self.__down_start_time = down_start_time
         return False
