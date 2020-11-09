@@ -8,8 +8,10 @@ class DownInfoBean:
     __down_start_timestamps = 0
     # 宕机结束时间，开始使用时时间戳
     __down_end_timestamps = 0
-    # 宕机可读时间节点
+    # 宕机开始可读时间节点 start_timestamps转换
     __down_start_time = ''
+    # 宕机结束刻度时间节点 end_timestamps转换
+    __down_end_time = ''
     # 宕机持续时间 ms
     __duration = 0
     # 宕机类别
@@ -36,7 +38,6 @@ class DownInfoBean:
             self.__down_end_timestamps = restart_shutdown_info_message.get_available_time()
         else:
             self.__down_end_timestamps = restart_gc_list[0].get_timestamps()
-            self.__down_time = utils.convert_time_to_date(self.__down_end_timestamps)
 
         # 宕机开始时间
         self.__down_start_timestamps = down_gc_list[-1].get_timestamps()
@@ -57,6 +58,8 @@ class DownInfoBean:
         self.__down_pid = down_gc_list[0].get_pid()
         self.__restart_pid = restart_gc_list[0].get_pid()
         self.__duration = self.__down_end_timestamps - self.__down_start_timestamps
+        self.__down_start_time = utils.convert_time_to_date(self.__down_start_timestamps)
+        self.__down_end_time = utils.convert_time_to_date(self.__down_end_timestamps)
 
     def get_duration(self):
         return self.__duration
@@ -78,6 +81,9 @@ class DownInfoBean:
 
     def get_down_start_time(self):
         return self.__down_start_time
+
+    def get_down_end_time(self):
+        return self.__down_end_time
 
     def is_off_heap(self, last_realtime_info_message):
         return self.__signal_name == 'OOM' or (

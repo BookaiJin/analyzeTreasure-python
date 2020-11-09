@@ -6,6 +6,7 @@ from entity.focuspoint.box.FocuspointWrapper import FocuspointWrapper
 from entity.focuspoint.message.IntellijReleaseInfoMessage import IntellijReleaseInfoMessage
 from entity.focuspoint.message.InterruptInfoMessage import InterruptInfoMessage
 from entity.focuspoint.message.LimitInfoMessage import LimitInfoMessage
+from entity.focuspoint.message.ServerInfoMessage import ServerInfoMessage
 from entity.focuspoint.message.ShutdownInfoMessage import ShutdownInfoMessage
 
 __author__ = 'bokai'
@@ -110,6 +111,8 @@ def generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail(focuspoint_p
                                         focuspoint_shutdown_info_message = ShutdownInfoMessage(row_result_dict)
                                         focuspoint_shutdown_info_message_list.append(focuspoint_shutdown_info_message)
                                         focuspoint_shutdown_file_writer.writerow(focuspoint_shutdown_info_message.to_print_focuspoint_log())
+                                    if row_id.startswith('FR-F5003'):
+                                        focuspoint_server_info_message = ServerInfoMessage(row_result_dict)
                     except Exception:
                         print("focusPoint row read failed.", filename, 'line:', reader.line_num)
                     finally:

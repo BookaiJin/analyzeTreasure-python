@@ -50,7 +50,7 @@ def start_analyze(treasure2analyze_path):
     # 解析reamTime文件夹 zippath/result/treas201901.reamtime.log
     real_time_usage_file_full_name = des_result_path + os.sep + zip_file_short_name + ".realtime.csv"
     # 解析不可用时长结果
-    unavailable_time_file_full_name = des_result_path + os.sep + zip_file_short_name + ".unavailable.log"
+    unavailable_time_file_full_name = des_result_path + os.sep + zip_file_short_name + ".unavailable"
 
     # 遍历日压缩包
     zip_dic = os.walk(zip_des_result_path)
