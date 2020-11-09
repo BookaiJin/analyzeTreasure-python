@@ -29,7 +29,7 @@ def analyze_unavailable_time(gc_info_message_node_pid_list_detail, realtime_usag
 
             down_info_message_list.append(down_info_message)
 
-        unavailable_time_file_node_full_name = unavailable_time_file_full_name + '-' + node + '-节点.log'
+        unavailable_time_file_node_full_name = unavailable_time_file_full_name + '-' + node + '-节点.csv'
         unavailable_time_file = open(unavailable_time_file_node_full_name, 'w')
         unavailable_time_log_header = [
             'No',
