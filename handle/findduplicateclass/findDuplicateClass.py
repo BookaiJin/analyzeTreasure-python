@@ -11,7 +11,6 @@ import zipfile
 
 
 def find_duplicate_class_from_list(all_jar_file_full_name_list):
-
     # 解压jar的路径 class_file_name:jar的键值对 重复添加到duplicate_class_jar_list_dict
     # 遍历的最终结果 {'com.fr.A':'a.jar', 'com.fr.B':'b.jar c.jar‘}
     # 展示的最终结果 {'com.fr.B':['b.jar', 'c.jar']}
@@ -27,8 +26,9 @@ def find_duplicate_class_from_list(all_jar_file_full_name_list):
             if class_file_name not in all_class_jar_dict:
                 all_class_jar_dict[class_file_name] = jar_file_name
             else:
-                duplicate_class_jar_list = [jar_file_name, all_class_jar_dict[class_file_name]]
-                duplicate_class_jar_list_dict[class_file_name] = duplicate_class_jar_list
+                duplicate_class_jar_name = jar_file_name + " " + all_class_jar_dict[class_file_name]
+                all_class_jar_dict[class_file_name] = duplicate_class_jar_name
+                duplicate_class_jar_list_dict[class_file_name] = duplicate_class_jar_name
 
     return duplicate_class_jar_list_dict
 
