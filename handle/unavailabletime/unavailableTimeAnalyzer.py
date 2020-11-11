@@ -24,7 +24,11 @@ def analyze_unavailable_time(gc_info_message_node_pid_list_detail, realtime_usag
             down_end_gc_list = gc_info_message_pid_list_detail[restart_pid]
             down_shutdown_message_item = focuspoint_wrapper.get_shutdown_message_item(node, down_pid)
             restart_shutdown_message_item = focuspoint_wrapper.get_shutdown_message_item(node, restart_pid)
-            down_info_message = DownInfoBean(down_start_gc_list, down_end_gc_list, realtime_usage_node_pid_list_detail[node][down_pid],
+            realtime_usage_node_pid_list = None
+            if node in realtime_usage_node_pid_list_detail:
+                if down_pid in realtime_usage_node_pid_list_detail[node]:
+                    realtime_usage_node_pid_list = realtime_usage_node_pid_list_detail[node][down_pid]
+            down_info_message = DownInfoBean(down_start_gc_list, down_end_gc_list, realtime_usage_node_pid_list,
                                              down_shutdown_message_item, restart_shutdown_message_item)
 
             down_info_message_list.append(down_info_message)

@@ -49,7 +49,7 @@ class DownInfoBean:
         elif self.is_xcpu(down_realtime_list):
             # 最后十分钟有八分钟 CPU高于
             self.__down_type = "XCPU"
-        elif self.is_off_heap(down_realtime_list[-1]):
+        elif self.is_off_heap(down_realtime_list):
             # 信号量OOM 或者 realtime最后物理内存小于1M
             self.__down_type = "OFFHEAP"
         else:
@@ -85,11 +85,15 @@ class DownInfoBean:
     def get_down_end_time(self):
         return self.__down_end_time
 
-    def is_off_heap(self, last_realtime_info_message):
+    def is_off_heap(self, realtime_info_message_list):
+        if realtime_info_message_list is None:
+            return False
         return self.__signal_name == 'OOM' or (
-                0 < last_realtime_info_message.get_physical_mem_free() < 1024)
+                0 < realtime_info_message_list[-1].get_physical_mem_free() < 1024)
 
     def is_xcpu(self, down_realtime_list):
+        if down_realtime_list is None:
+            return False
         # 最后十分钟的realtime记录点80%的CPU高于0.9即为CPU宕机
         # 最后一条realtime的时间
         down_realtime_list.sort(key=RealtimeUsage.get_timestamps, reverse=True)
