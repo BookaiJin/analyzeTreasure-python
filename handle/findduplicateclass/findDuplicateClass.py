@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-""" 文件按照key排序 """
+""" 筛选出文件夹下重复的class """
 
 __author__ = 'bokai'
 
