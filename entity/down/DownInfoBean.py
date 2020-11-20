@@ -122,13 +122,13 @@ class DownInfoBean:
         for gc_info_message in down_gc_list:
             if last_gc_time - gc_info_message.get_timestamps() > 10 * 60 * 1000:
                 break
-            if gc_info_message.get_gc_type() is 'Full GC':
+            if gc_info_message.get_gc_type() == 'Full GC':
                 last_10_gc_duration += gc_info_message.get_duration()
             last_10_gc_times += 1
         if last_10_gc_duration > 3 * 60 * 1000:
             self.__down_type = 'Xmx-OOM'
             # 判断为宕机之后，最后一条为full gc，继续往前索引，找到连续full gc的第一条
-            if down_gc_list[last_10_gc_times].get_gc_type() is 'Full GC':
+            if down_gc_list[last_10_gc_times].get_gc_type() == 'Full GC':
                 down_gc_list = down_gc_list[last_10_gc_times:]
                 for gc_info_message in down_gc_list:
                     if gc_info_message.get_gc_type() is 'Full GC':

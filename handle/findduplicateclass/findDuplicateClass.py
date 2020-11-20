@@ -68,7 +68,7 @@ def add_jar_file_list(path, all_jar_file_full_name_list):
 
 if __name__ == '__main__':
     to_find_path = input('输入待查找的路径：')
-    result_file = open(to_find_path + os.sep + 'duplicate_class.log', 'w')
-    error_log_file = open(to_find_path + os.sep + 'error.log', 'w')
+    result_file = open(to_find_path + os.sep + 'duplicate_class.log', 'w', encoding='utf-8')
+    error_log_file = open(to_find_path + os.sep + 'error.log', 'w', encoding='utf-8')
     find_duplicate_class(to_find_path)
     print('处理完毕，' + error_log_file.name + '查看处理异常，' + result_file.name + '查看结果')

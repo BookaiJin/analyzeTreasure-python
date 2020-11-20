@@ -83,3 +83,6 @@ class GcInfoMessage:
 
     def get_gc_type(self):
         return self.__gc_type
+
+    def get_duration(self):
+        return self.__gc_duration
