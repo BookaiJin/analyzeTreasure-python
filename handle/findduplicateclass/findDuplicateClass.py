@@ -16,6 +16,11 @@ result_file = None
 
 def write_result(duplicate_class_jar_list_dict, to_find_full_class):
     global result_file
+    if duplicate_class_jar_list_dict == {}:
+        result_file.write('没有重复的类')
+        result_file.close()
+        return
+
     if to_find_full_class in duplicate_class_jar_list_dict:
         result_file.write(to_find_full_class + '重复出现的jar包有: \n')
         for the_jar_contains_duplicate_class in duplicate_class_jar_list_dict[to_find_full_class]:
@@ -26,6 +31,7 @@ def write_result(duplicate_class_jar_list_dict, to_find_full_class):
         result_file.write('该路径下没有找到此类重复的jar包: ' + to_find_full_class)
     result_file.write('\n')
 
+    result_file.write('所有重复的类: \n')
     for key, value in duplicate_class_jar_list_dict.items():
         result_file.write(key + "\n")
         for duplicate_class_jar_file in value:
@@ -79,7 +85,7 @@ def find_duplicate_class(to_find_full_class, to_find_full_path):
 
 
 if __name__ == '__main__':
-    to_find_class = input('报错的类，请输入带包名的全名称「com.***.*** 或 org.***.***」: ')
+    to_find_class = input('报错的类，请输入带包名的全名称「com/***/*** 、 org/***/*** 等」: ')
     to_find_path = input('输入待查找的路径: ')
     result_file = open(to_find_path + os.sep + 'duplicate_class.log', 'w', encoding='utf-8')
     error_log_file = open(to_find_path + os.sep + 'error.log', 'w', encoding='utf-8')
