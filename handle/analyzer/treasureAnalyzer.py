@@ -102,3 +102,4 @@ def start_analyze(treasure2analyze_path):
 if __name__ == '__main__':
     treasure_path = input('输入treasure文件路径: ')
     start_analyze(treasure_path)
+    input('Please input any key to exit')
