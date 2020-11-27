@@ -100,6 +100,6 @@ def start_analyze(treasure2analyze_path):
 
 
 if __name__ == '__main__':
-    treasure_path = input('输入treasure文件路径: ')
+    treasure_path = input('输入treasure文件路径(目前只支持单个月zip格式数据包解析「如treas202011.zip」): ')
     start_analyze(treasure_path)
     input('Please input any key to exit')
