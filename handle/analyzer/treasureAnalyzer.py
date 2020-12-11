@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """ main """
+from file.execute import executeTemplate, executeSql
 from file.focusPoint import focusPoint
 from file.gcRecord import gcRecord
 from file.realTimeUsage import realTimeUsage
@@ -43,6 +44,10 @@ def start_analyze(treasure2analyze_path):
     focuspoint_files_path = des_result_path + os.sep + 'focuspoint'
     # 解压出来的realTimeUsage文件 zippath/result/realTimeUsage/realTimeUsage类文件
     realtime_usage_files_path = des_result_path + os.sep + 'realtimeusage'
+    # 解压出来的execute文件 zippath/result/execute/execute类文件
+    execute_files_path = des_result_path + os.sep + 'execute'
+    # 解压出来的executeSql文件 zippath/result/executeSql/executeSql类文件
+    execute_sql_files_path = des_result_path + os.sep + 'executesql'
     # 合并后的gc日志 zippath/result/treas201901.gc.log
     gc_file_full_name = des_result_path + os.sep + zip_file_short_name + '.gc.log'
     # 解析focusPoint文件夹 zippath/result/treas201901.focuspoint.log
@@ -75,31 +80,42 @@ def start_analyze(treasure2analyze_path):
                     if dayFile.startswith('realTime'):
                         day_unzip.extract(dayFile, realtime_usage_files_path)
 
+                    # execute文件处理
+                    if dayFile.startswith('execute') and not dayFile.startswith('executeSql'):
+                        day_unzip.extract(dayFile, execute_files_path)
+
+                    # executeSql文件处理
+                    if dayFile.startswith('executeSql'):
+                        day_unzip.extract(dayFile, execute_sql_files_path)
+
     unzip_end_time = time.time()
     print('unzip time:', (unzip_end_time - start_time) * 1000, 'ms')
 
     # 删除日压缩包
     shutil.rmtree(zip_des_result_path)
 
-    gc_info_message_node_pid_detail = gcRecord.generate_gc_log_and_get_node_pid_gc_info_list_detail(
-        gc_record_files_path, gc_file_full_name)
-    realtime_usage_node_pid_list_detail = realTimeUsage.generate_realtime_usage_and_get_node_pid_realtime_info_list_detail(
-        realtime_usage_files_path, real_time_usage_file_full_name)
-    focuspoint_wrapper = focusPoint.generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail(focuspoint_files_path,
-                                                                                                    focuspoint_file_full_name)
+    executeTemplate.generate_execute_template(execute_files_path)
+    executeSql.generate_execute_sql(execute_sql_files_path)
 
-    end_time = time.time()
-    print('analyze total time:', (end_time - start_time) * 1000, 'ms\n')
-
-    print('不可用时长分析')
-    unavailable_start_time = time.time()
-    unavailableTimeAnalyzer.analyze_unavailable_time(gc_info_message_node_pid_detail, realtime_usage_node_pid_list_detail,
-                                                     focuspoint_wrapper, unavailable_time_file_full_name)
-    unavailable_end_time = time.time()
-    print('unavailable analyze total time:', (unavailable_end_time - unavailable_start_time) * 1000, 'ms')
+    # gc_info_message_node_pid_detail = gcRecord.generate_gc_log_and_get_node_pid_gc_info_list_detail(
+    #     gc_record_files_path, gc_file_full_name)
+    # realtime_usage_node_pid_list_detail = realTimeUsage.generate_realtime_usage_and_get_node_pid_realtime_info_list_detail(
+    #     realtime_usage_files_path, real_time_usage_file_full_name)
+    # focuspoint_wrapper = focusPoint.generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail(focuspoint_files_path,
+    #                                                                                                 focuspoint_file_full_name)
+    #
+    # end_time = time.time()
+    # print('analyze total time:', (end_time - start_time) * 1000, 'ms\n')
+    #
+    # print('不可用时长分析')
+    # unavailable_start_time = time.time()
+    # unavailableTimeAnalyzer.analyze_unavailable_time(gc_info_message_node_pid_detail, realtime_usage_node_pid_list_detail,
+    #                                                  focuspoint_wrapper, unavailable_time_file_full_name)
+    # unavailable_end_time = time.time()
+    # print('unavailable analyze total time:', (unavailable_end_time - unavailable_start_time) * 1000, 'ms')
 
 
 if __name__ == '__main__':
     treasure_path = input('输入treasure文件路径(目前只支持单个月zip格式数据包解析「如treas202011.zip」): ')
     start_analyze(treasure_path)
-    input('Please input any key to exit')
+    # input('Please input any key to exit')
