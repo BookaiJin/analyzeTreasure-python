@@ -25,3 +25,6 @@ class ExecuteSqlRecord:
 
     def get_timestamp(self):
         return self.__timestamp
+
+    def get_sql_time(self):
+        return self.__sql_time

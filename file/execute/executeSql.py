@@ -26,6 +26,7 @@ def generate_execute_sql(execute_sql_path):
     # result_real_time_writer.writeheader()
     # realtime_usage_list_detail = []
     execute_sql_list_detail = []
+    execute_sql_time_list_detail = {}
     for parent, dir_name, file_names in os.walk(execute_sql_path):
         # filenames是一个list所有focuspoint文件的集合
         for filename in file_names:
@@ -41,6 +42,11 @@ def generate_execute_sql(execute_sql_path):
                             if row[0] != '' and row[0] != 'time':
                                 execute_sql_message = ExecuteSqlRecord(row)
                                 execute_sql_list_detail.append(execute_sql_message)
+                                time_spend = int(execute_sql_message.get_sql_time() / 1000)
+                                if time_spend in execute_sql_time_list_detail:
+                                    execute_sql_time_list_detail[time_spend].append(execute_sql_message)
+                                else:
+                                    execute_sql_time_list_detail[time_spend] = [execute_sql_message]
                                 # realtime_usage_list_detail.append(execute_sql_message)
                                 # result_real_time_writer.writerow(execute_sql_message.to_print_realtime_usage_log())
                         except IOError as e:
@@ -52,7 +58,9 @@ def generate_execute_sql(execute_sql_path):
 
     # result_real_time_usage_log_file.close()
     # analyzeFileUtils.sort_file_message(realtime_usage_fullname, ['time'])
-    execute_sql_list_detail.sort(key=ExecuteSqlRecord.get_timestamp)
+
+    # execute_sql_list_detail.sort(key=ExecuteSqlRecord.get_timestamp)
+    execute_sql_time_list_detail = [(k, execute_sql_time_list_detail[k]) for k in sorted(execute_sql_time_list_detail.keys())]
     # realtime_usage_node_pid_list_detail = {}
     # for execute_sql_message in realtime_usage_list_detail:
     #     node = execute_sql_message.get_node()
@@ -67,4 +75,4 @@ def generate_execute_sql(execute_sql_path):
     #         realtime_usage_node_pid_list_detail[node] = {}
     #         realtime_usage_node_pid_list_detail[node][pid] = []
     #         realtime_usage_node_pid_list_detail[node][pid].append(execute_sql_message)
-    return execute_sql_list_detail
+    return execute_sql_time_list_detail
