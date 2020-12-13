@@ -28,6 +28,7 @@ class ExecuteTemplateRecord:
         self.__consume = int(row[6])
         self.__sql_time = int(row[7])
         self.__complete = int(row[11])
+        self.__start_time = self.__timestamp - self.__consume
 
     def get_start_time(self):
         return self.__start_time
