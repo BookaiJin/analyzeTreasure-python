@@ -28,3 +28,6 @@ class ExecuteSqlRecord:
 
     def get_sql_time(self):
         return self.__sql_time
+
+    def get_id(self):
+        return self.__execute_id

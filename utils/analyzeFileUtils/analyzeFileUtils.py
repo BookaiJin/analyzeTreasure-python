@@ -11,9 +11,9 @@ import pandas as pd
 # 写好文件后，排下序
 
 
-def sort_file_message(file_fullname2sort, list2sort):
+def sort_file_message(file_fullname2sort, list2sort, ascending=True):
     data = pd.read_csv(file_fullname2sort)
-    data.sort_values(list2sort, axis=0, ascending=True, inplace=True)
+    data.sort_values(list2sort, axis=0, ascending=ascending, inplace=True)
     data.to_csv(file_fullname2sort)
 
 

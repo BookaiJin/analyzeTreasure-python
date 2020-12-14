@@ -32,3 +32,9 @@ class ExecuteTemplateRecord:
 
     def get_start_time(self):
         return self.__start_time
+
+    def get_consume(self):
+        return self.__consume
+
+    def get_sql_time(self):
+        return self.__sql_time

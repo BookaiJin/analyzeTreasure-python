@@ -56,6 +56,10 @@ def start_analyze(treasure2analyze_path):
     real_time_usage_file_full_name = des_result_path + os.sep + zip_file_short_name + ".realtime.csv"
     # 解析不可用时长结果
     unavailable_time_file_full_name = des_result_path + os.sep + zip_file_short_name + ".unavailable"
+    # 解析template执行时间
+    execute_file_full_name = des_result_path + os.sep + zip_file_short_name+'.execute.csv'
+    # 解析sql执行时间
+    execute_sql_file_full_name = des_result_path + os.sep + zip_file_short_name + '.executeSql.csv'
 
     # 遍历日压缩包
     zip_dic = os.walk(zip_des_result_path)
@@ -88,14 +92,15 @@ def start_analyze(treasure2analyze_path):
                     if dayFile.startswith('executeSql'):
                         day_unzip.extract(dayFile, execute_sql_files_path)
 
+                    dayFile = None
+
+
     unzip_end_time = time.time()
     print('unzip time:', (unzip_end_time - start_time) * 1000, 'ms')
 
-    # 删除日压缩包
-    shutil.rmtree(zip_des_result_path)
+    execute_sql_record_wrapper = executeSql.generate_execute_sql(execute_sql_files_path, execute_sql_file_full_name)
+    executeTemplate.generate_execute_template(execute_files_path, execute_sql_record_wrapper, execute_file_full_name)
 
-    executeTemplate.generate_execute_template(execute_files_path)
-    executeSql.generate_execute_sql(execute_sql_files_path)
 
     # gc_info_message_node_pid_detail = gcRecord.generate_gc_log_and_get_node_pid_gc_info_list_detail(
     #     gc_record_files_path, gc_file_full_name)
@@ -114,6 +119,8 @@ def start_analyze(treasure2analyze_path):
     # unavailable_end_time = time.time()
     # print('unavailable analyze total time:', (unavailable_end_time - unavailable_start_time) * 1000, 'ms')
 
+    # 删除日压缩包
+    shutil.rmtree(zip_des_result_path)
 
 if __name__ == '__main__':
     treasure_path = input('输入treasure文件路径(目前只支持单个月zip格式数据包解析「如treas202011.zip」): ')
