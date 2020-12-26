@@ -41,32 +41,35 @@ def generate_execute_sql(execute_sql_path, execute_sql_full_name):
                 reader = csv.reader(real_time_csv_file)
 
                 j = 0
-                for i, row in enumerate(reader):
-                    if i == j:
-                        try:
-                            if row[0] != '' and row[0] != 'time':
-                                execute_sql_message = ExecuteSqlRecord(row)
-                                execute_sql_list_detail.append(execute_sql_message)
+                try:
+                    for i, row in enumerate(reader):
+                        if i == j:
+                            try:
+                                if row[0] != '' and row[0] != 'time':
+                                    execute_sql_message = ExecuteSqlRecord(row)
+                                    execute_sql_list_detail.append(execute_sql_message)
 
-                                time_spend = int(execute_sql_message.get_sql_time() / 1000)
-                                if time_spend in execute_sql_time_list_detail:
-                                    execute_sql_time_list_detail[time_spend].append(execute_sql_message)
-                                    execute_sql_count_detail[time_spend] += 1
-                                else:
-                                    execute_sql_time_list_detail[time_spend] = [execute_sql_message]
-                                    execute_sql_count_detail[time_spend] = 1
+                                    time_spend = int(execute_sql_message.get_sql_time() / 1000)
+                                    if time_spend in execute_sql_time_list_detail:
+                                        execute_sql_time_list_detail[time_spend].append(execute_sql_message)
+                                        execute_sql_count_detail[time_spend] += 1
+                                    else:
+                                        execute_sql_time_list_detail[time_spend] = [execute_sql_message]
+                                        execute_sql_count_detail[time_spend] = 1
 
-                                id = execute_sql_message.get_id()
-                                if id in execute_sql_id_list_detail:
-                                    execute_sql_id_list_detail[id].append(execute_sql_message)
-                                else:
-                                    execute_sql_id_list_detail[id] = [execute_sql_message]
-                                # realtime_usage_list_detail.append(execute_sql_message)
-                                # result_real_time_writer.writerow(execute_sql_message.to_print_realtime_usage_log())
-                        except IOError as e:
-                            print("focusPoint row read failed.", filename, 'line:', reader.line_num)
-                        finally:
-                            j = j + 1
+                                    id = execute_sql_message.get_id()
+                                    if id in execute_sql_id_list_detail:
+                                        execute_sql_id_list_detail[id].append(execute_sql_message)
+                                    else:
+                                        execute_sql_id_list_detail[id] = [execute_sql_message]
+                                    # realtime_usage_list_detail.append(execute_sql_message)
+                                    # result_real_time_writer.writerow(execute_sql_message.to_print_realtime_usage_log())
+                            except IOError as e:
+                                print("focusPoint row read failed.", filename, 'line:', reader.line_num)
+                            finally:
+                                j = j + 1
+                except Exception as e:
+                    print("focusPoint row read failed.", filename)
 
                 real_time_csv_file.close()
 

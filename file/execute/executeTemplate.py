@@ -30,7 +30,6 @@ def generate_execute_template(execute_path, execute_sql_record_wrapper, execute_
     execute_template_list_detail = []
     execute_template_sql_span_list_detail = {}
     execute_template_consume_list_detail = {}
-    execute_template_consume_count_detail = {}
     for parent, dir_name, file_names in os.walk(execute_path):
         # filenames是一个list所有focuspoint文件的集合
         for filename in file_names:
@@ -50,10 +49,8 @@ def generate_execute_template(execute_path, execute_sql_record_wrapper, execute_
                                 consume = int(execute_template_message.get_consume() / 1000)
                                 if consume in execute_template_list_detail:
                                     execute_template_consume_list_detail[consume].append(execute_template_message)
-                                    execute_template_consume_count_detail[consume] += 1
                                 else:
                                     execute_template_consume_list_detail[consume] = [execute_template_message]
-                                    execute_template_consume_count_detail[consume] = 1
 
                                 # 模板sql计算时间分组
                                 sql_span = int(execute_template_message.get_sql_time() / 1000)
@@ -84,9 +81,6 @@ def generate_execute_template(execute_path, execute_sql_record_wrapper, execute_
     execute_template_file_header = ['sql_span', 'count']
     execute_template_writer = csv.DictWriter(execute_template_log_file, execute_template_file_header)
     execute_template_writer.writeheader()
-    for key,value in execute_template_consume_count_detail.items():
-        row = {'sql_span': key, 'count': value}
-        execute_template_writer.writerow(row)
     execute_template_log_file.close()
     analyzeFileUtils.sort_file_message(execute_template_file_full_name, ['count'], False)
     # realtime_usage_node_pid_list_detail = {}
