@@ -4,6 +4,7 @@ import os
 def generate(des_directory):
     result_file = des_directory + os.sep + 'total_sql_cal.csv'
     result_file_writer = open(result_file, 'w')
+    result_file_writer.write('app_id,year_month,99.99%的SQL时长,当月执行总次数,白天8小时每秒SQL数量\n')
     # 遍历日压缩包
     execute_sql_directory = os.walk(des_directory)
     # dayZip is one of tuple 0:top文件名 1:dir文件夹 2:nondir文件
