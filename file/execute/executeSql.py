@@ -71,23 +71,21 @@ def generate_execute_sql(company_info, execute_sql_path, execute_sql_full_name, 
         sorted_execute_sql_count_detail[k] = execute_sql_count_detail[k]
     execute_sql_log_file = open(execute_sql_full_name, 'w')
     execute_sql_total_cal_file = open(execute_sql_full_cal_name, 'w')
-    execute_sql_file_header = ['sql_span', 'count', "大于等于当前sql耗时总次数", "小于当前耗时占比%", "total_SQL_count", "白天8小时每秒SQL数量", '99.99%的SQL时长', '大于180s的次数', '大于99.99的次数']
+    execute_sql_file_header = ['sql_span', 'count', "大于等于当前sql耗时总次数", "小于当前耗时占比%", "total_SQL_count", "白天8小时每秒SQL数量", '99.99%的SQL时长', '大于180s的次数',
+                               '大于99.99的次数']
     result_real_time_writer = csv.DictWriter(execute_sql_log_file, execute_sql_file_header)
     result_real_time_writer.writeheader()
     now_count = 0
     now_count_up_99_key = 0
     value_over_180_count = 0
     value_over_99_count = 0
-    execute_sql_total_cal_row = ''
     for key, value in sorted_execute_sql_count_detail.items():
         now_count += value
         now_count_percent = 100 - (now_count / execute_sql_total_count * 100)
-        if now_count_percent <= 99.99 and now_count_up_99_key == 0:
+        if now_count_percent > 99.99:
             value_over_99_count += value
+        if now_count_percent <= 99.99 and now_count_up_99_key == 0:
             now_count_up_99_key = key
-            execute_sql_total_cal_row = company_info.app_id + ',' + company_info.year_month + ',' + str(now_count_up_99_key) + ',' + \
-                                        str(execute_sql_total_count) + ',' + \
-                                        str(execute_sql_total_count / 20 / 8 / 60 / 60)
         if key >= 180:
             value_over_180_count += value
 
@@ -97,8 +95,12 @@ def generate_execute_sql(company_info, execute_sql_path, execute_sql_full_name, 
                '99.99%的SQL时长': now_count_up_99_key,
                '大于180s的次数': value_over_180_count,
                '大于99.99的次数': value_over_99_count
-        }
+               }
         result_real_time_writer.writerow(row)
+
+    execute_sql_total_cal_row = company_info.app_id + ',' + company_info.year_month + ',' + str(now_count_up_99_key) + ',' + \
+                                str(execute_sql_total_count) + ',' + \
+                                str(execute_sql_total_count / 20 / 8 / 60 / 60) + ',' + str(value_over_180_count) + ',' + str(value_over_99_count)
     execute_sql_total_cal_file.write(execute_sql_total_cal_row)
 
     execute_sql_log_file.close()
