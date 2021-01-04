@@ -83,7 +83,7 @@ def generate_execute_sql(company_info, execute_sql_path, execute_sql_full_name, 
         now_count += value
         now_count_percent = 100 - (now_count / execute_sql_total_count * 100)
         if now_count_percent <= 99.99 and now_count_up_99_key == 0:
-            value_over_99_count += count
+            value_over_99_count += value
             now_count_up_99_key = key
             execute_sql_total_cal_row = company_info.app_id + ',' + company_info.year_month + ',' + str(now_count_up_99_key) + ',' + \
                                         str(execute_sql_total_count) + ',' + \
