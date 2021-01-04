@@ -88,7 +88,7 @@ def generate_execute_sql(company_info, execute_sql_path, execute_sql_full_name, 
             execute_sql_total_cal_row = company_info.app_id + ',' + company_info.year_month + ',' + str(now_count_up_99_key) + ',' + \
                                         str(execute_sql_total_count) + ',' + \
                                         str(execute_sql_total_count / 20 / 8 / 60 / 60)
-        if value >= key:
+        if key >= 180:
             value_over_180_count += value
 
         row = {'sql_span': key, 'count': value, '大于等于当前sql耗时总次数': now_count, '小于当前耗时占比%': now_count_percent,
