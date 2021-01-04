@@ -71,7 +71,7 @@ def generate_execute_sql(company_info, execute_sql_path, execute_sql_full_name, 
         sorted_execute_sql_count_detail[k] = execute_sql_count_detail[k]
     execute_sql_log_file = open(execute_sql_full_name, 'w')
     execute_sql_total_cal_file = open(execute_sql_full_cal_name, 'w')
-    execute_sql_file_header = ['sql_span', 'count', "大于等于当前sql耗时总次数", "小于当前耗时占比%", "total_SQL_count", "白天8小时每秒SQL数量", '99.99%的SQL时长']
+    execute_sql_file_header = ['sql_span', 'count', "大于等于当前sql耗时总次数", "小于当前耗时占比%", "total_SQL_count", "白天8小时每秒SQL数量", '99.99%的SQL时长', '大于180s的次数', '大于99.99的次数']
     result_real_time_writer = csv.DictWriter(execute_sql_log_file, execute_sql_file_header)
     result_real_time_writer.writeheader()
     now_count = 0
@@ -95,7 +95,9 @@ def generate_execute_sql(company_info, execute_sql_path, execute_sql_full_name, 
                "total_SQL_count": execute_sql_total_count,
                "白天8小时每秒SQL数量": execute_sql_total_count / 20 / 8 / 60 / 60,
                '99.99%的SQL时长': now_count_up_99_key,
-               '大于180s的次数': value_over_180_count}
+               '大于180s的次数': value_over_180_count,
+               '大于99.99的次数': value_over_99_count
+        }
         result_real_time_writer.writerow(row)
     execute_sql_total_cal_file.write(execute_sql_total_cal_row)
 
