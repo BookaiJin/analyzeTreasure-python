@@ -1,5 +1,3 @@
-import re
-
 from utils.myTime import utils
 
 
@@ -28,7 +26,7 @@ class GcInfoMessage:
                               '[Times: real={} secs] [pid:{}]'
     # gc_log_young_reg = r'^(.*?): [(.*?) ((.*?)) [PSYoungGen: (.*?)K->(.*?)K((.*?)K)] (.*?)K->(.*?)K((.*?)K), (.*?) secs] ' \
     #                    '[Times: real=(.*?) secs] [pid:(.*?)]$'
-    gc_log_young_reg = r'^(.*)\[(.*?) \((.*?)\) \[PSYoungGen: (.*?)K->(.*?)K\((.*?)K\)\] (.*?)K->(.*?)K\((.*?)K\), (.*?) secs\] (.*)$'
+    gc_log_young_reg = r'^(.*)\[(.*?) \((.*?)\) \[PSYoungGen: (\d*?)K->(\d*?)K\((\d*?)K\)\] (\d*?)K->(\d*?)K\((\d*?)K\), (.*?) secs\] (.*)$'
 
     # {}: [{} ({}) [PSYoungGen: {}K->{}K({}K)] [ParOldGen: {}K->{}K({}K)] {}K->{}K({}K),
     # [Metaspace: {}K->{}K({}K)], {} secs] [Times: real={} secs]
@@ -37,8 +35,8 @@ class GcInfoMessage:
     # [Metaspace: 150304K->150304K(154008K)], 0.295 secs] [Times: real=0.295 secs]
     __full_result_str_temp = '{}: [{} ({}) [PSYoungGen: {}K->{}K({}K)] [ParOldGen: {}K->{}K({}K)] {}K->{}K({}K), ' \
                              '[Metaspace: {}K->{}K({}K)], {} secs] [Times: real={} secs] [pid:{}]'
-    gc_log_full_reg = r'^(.*?): [(.*?) ((.*?)) [PSYoungGen: (.*?)K->(.*?)K((.*?)K)] [ParOldGen: (.*?)K->(.*?)K((.*?)K)] (.*?)K->(.*?)K((.*?)K), ' \
-                      '[Metaspace: (.*?)K->(.*?)K((.*?)K)], (.*?) secs] [Times: real=(.*?) secs] [pid:(.*?)]$'
+    gc_log_full_reg = r'^(.*)\[(.*?) \((.*?)\) \[PSYoungGen: (\d*?)K->(\d*?)K\((\d*?)K\)] \[ParOldGen: (\d*?)K->(\d*?)K\((\d*?)K\)] (\d*?)K->(\d*?)K\((\d*?)K\), ' \
+                      r'\[Metaspace: (\d*?)K->(\d*?)K\((\d*?)K\)], (.*?) secs] (.*)$'
 
     # 生成GcInfo对象
     def __init__(self, gc_record_dict):
@@ -46,7 +44,7 @@ class GcInfoMessage:
         self.__timestamps = int(gc_record_dict.get('gcStartTime'))
         self.__gc_type = gc_record_dict.get('gcType')
         self.__gc_cause = gc_record_dict.get('gcCause')
-        self.__gc_duration = int(gc_record_dict.get('duration'))
+        self.__gc_duration = float(gc_record_dict.get('duration'))
         self.__pid = gc_record_dict.get('pid')
         temp_time = utils.convert_time2date_timezone(self.__timestamps)
         self.__start_time = temp_time[:23] + temp_time[26:]
@@ -57,8 +55,11 @@ class GcInfoMessage:
         self.after_heap = int(self.__gc_record_dict.get('heapAfterUsed'))
         self.before_old = self.before_heap - self.before_young
         self.after_old = self.after_heap - self.after_young
-        self.committed_old = self.__gc_record_dict.get('heapAfterCommitted') - self.__gc_record_dict.get('youngAfterCommitted')
-        self.rate_old = self.after_old / self.committed_old
+        self.committed_old = int(self.__gc_record_dict.get('heapAfterCommitted')) - int(self.__gc_record_dict.get('youngAfterCommitted'))
+        if self.committed_old == 0:
+            self.rate_old = 0
+        else:
+            self.rate_old = float(self.after_old / self.committed_old)
 
     def to_print_gc_log(self):
         result_str = ''
