@@ -16,8 +16,11 @@ class GcInfoMessage:
     after_old = 0
     before_heap = 0
     after_heap = 0
+    committed_young = 0
     committed_old = 0
+    rate_young = 0.0
     rate_old = 0.0
+    rate_heap = 0.0
 
     # {}: [{} ({}) [PSYoungGen: {}K->{}K({}K)] {}K->{}K({}K), {} secs] [Times: real={} secs]
     # 2019-12-05T01:43:05.435+0800: 60637.045: [GC (Allocation Failure) [PSYoungGen: 1028864K->1984K(1006080K)]
@@ -26,7 +29,7 @@ class GcInfoMessage:
                               '[Times: real={} secs] [pid:{}]'
     # gc_log_young_reg = r'^(.*?): [(.*?) ((.*?)) [PSYoungGen: (.*?)K->(.*?)K((.*?)K)] (.*?)K->(.*?)K((.*?)K), (.*?) secs] ' \
     #                    '[Times: real=(.*?) secs] [pid:(.*?)]$'
-    gc_log_young_reg = r'^(.*)\[(.*?) \((.*?)\) \[PSYoungGen: (\d*?)K->(\d*?)K\((\d*?)K\)\] (\d*?)K->(\d*?)K\((\d*?)K\), (.*?) secs\] (.*)$'
+    gc_log_young_reg = r'^(.*)\[(.*?) \((.*?)\)(.*)\[PSYoungGen: (\d*?)K->(\d*?)K\((\d*?)K\)\] (\d*?)K->(\d*?)K\((\d*?)K\), (.*?) secs\] (.*)$'
 
     # {}: [{} ({}) [PSYoungGen: {}K->{}K({}K)] [ParOldGen: {}K->{}K({}K)] {}K->{}K({}K),
     # [Metaspace: {}K->{}K({}K)], {} secs] [Times: real={} secs]
@@ -51,15 +54,16 @@ class GcInfoMessage:
         self.__gc_record_dict = gc_record_dict
         self.before_young = int(self.__gc_record_dict.get('youngBeforeUsed'))
         self.after_young = int(self.__gc_record_dict.get('youngAfterUsed'))
+        self.committed_young = int(self.__gc_record_dict.get('youngAfterCommitted'))
         self.before_heap = int(self.__gc_record_dict.get('heapBeforeUsed'))
         self.after_heap = int(self.__gc_record_dict.get('heapAfterUsed'))
+        self.committed_heap = int(self.__gc_record_dict.get('heapAfterCommitted'))
         self.before_old = self.before_heap - self.before_young
         self.after_old = self.after_heap - self.after_young
         self.committed_old = int(self.__gc_record_dict.get('heapAfterCommitted')) - int(self.__gc_record_dict.get('youngAfterCommitted'))
-        if self.committed_old == 0:
-            self.rate_old = 0
-        else:
-            self.rate_old = float(self.after_old / self.committed_old)
+        self.rate_young = self.after_young / self.committed_young if self.committed_young != 0 else 0
+        self.rate_old = self.after_old / self.committed_old if self.committed_old != 0 else 0
+        self.rate_heap = self.after_heap / self.committed_heap if self.committed_heap != 0 else 0
 
     def to_print_gc_log(self):
         result_str = ''
