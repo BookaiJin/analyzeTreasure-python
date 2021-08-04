@@ -33,7 +33,7 @@ def generate_realtime_usage_and_get_node_pid_realtime_info_list_detail(realtime_
             if filename.startswith('realTime') and filename.endswith('.csv'):
                 # 打开每个文件
                 real_time_csv_file = open(parent + os.sep + filename, 'r')
-                reader = csv.reader(real_time_csv_file)
+                reader = csv.reader((line.replace('\0', '') for line in real_time_csv_file))
 
                 j = 0
                 for i, row in enumerate(reader):

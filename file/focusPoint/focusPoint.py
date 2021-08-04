@@ -16,6 +16,7 @@ import csv
 import utils.myTime.utils
 from utils.analyzeFileUtils import analyzeFileUtils
 import pandas as pd
+import json
 
 
 # 给一个focuspoint解压后的路径，解析里面的focusPoint文件
@@ -68,7 +69,7 @@ def generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail(focuspoint_p
             if filename.startswith('focusPoint') and filename.endswith('.csv'):
                 # 打开每个文件
                 focuspoint_csv_file = open(parent + os.sep + filename, 'r')
-                reader = csv.reader(focuspoint_csv_file)
+                reader = csv.reader((line.replace('\0', '') for line in focuspoint_csv_file))
 
                 j = 0
                 for i, rows in enumerate(reader):
@@ -91,7 +92,7 @@ def generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail(focuspoint_p
                                     row_result_dict['body'] = row[7]
                                     node = ''
                                     if row[7] != '':
-                                        body = pd.json.loads(row[7])
+                                        body = json.loads(row[7])
                                         node = body.get('node')
                                         row_result_dict['body'] = body
                                     row_result_dict['node'] = node
@@ -113,8 +114,8 @@ def generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail(focuspoint_p
                                         focuspoint_shutdown_file_writer.writerow(focuspoint_shutdown_info_message.to_print_focuspoint_log())
                                     if row_id.startswith('FR-F5003'):
                                         focuspoint_server_info_message = ServerInfoMessage(row_result_dict)
-                    except Exception:
-                        print("focusPoint row read failed.", filename, 'line:', reader.line_num)
+                    except Exception as e:
+                        print("focusPoint row read failed.", filename, 'line:', reader.line_num, e)
                     finally:
                         j = j + 1
 
