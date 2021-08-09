@@ -7,12 +7,15 @@ class FocuspointWrapper:
 
     __shutdown_info_message_node_pid_item = {}
 
+    load_group_message = None
+
     def __init__(self, limit_info_message_node_list_detail, release_info_message_node_list_detail,
-                 interrupt_info_message_node_list_detail, shutdown_info_message_node_pid_item):
+                 interrupt_info_message_node_list_detail, shutdown_info_message_node_pid_item, load_group_message):
         self.__limit_info_message_node_list_detail = limit_info_message_node_list_detail
         self.__release_info_message_node_list_detail = release_info_message_node_list_detail
         self.__interrupt_info_message_node_list_detail = interrupt_info_message_node_list_detail
         self.__shutdown_info_message_node_pid_item = shutdown_info_message_node_pid_item
+        self.load_group_message = load_group_message
 
     def get_limit_message_list(self):
         return self.__limit_info_message_node_list_detail

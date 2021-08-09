@@ -6,6 +6,7 @@ from entity.focuspoint.box.FocuspointWrapper import FocuspointWrapper
 from entity.focuspoint.message.IntellijReleaseInfoMessage import IntellijReleaseInfoMessage
 from entity.focuspoint.message.InterruptInfoMessage import InterruptInfoMessage
 from entity.focuspoint.message.LimitInfoMessage import LimitInfoMessage
+from entity.focuspoint.message.LoadGroupMessage import LoadGroupMessage
 from entity.focuspoint.message.ServerInfoMessage import ServerInfoMessage
 from entity.focuspoint.message.ShutdownInfoMessage import ShutdownInfoMessage
 
@@ -63,6 +64,8 @@ def generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail(focuspoint_p
     focuspoint_shutdown_file_writer.writeheader()
     focuspoint_shutdown_info_message_list = []
 
+    load_group_message = LoadGroupMessage()
+
     for parent, dir_name, file_names in os.walk(focuspoint_path):
         # filenames是一个list所有focuspoint文件的集合
         for filename in file_names:
@@ -96,18 +99,26 @@ def generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail(focuspoint_p
                                         node = body.get('node')
                                         row_result_dict['body'] = body
                                     row_result_dict['node'] = node
+                                    # 模板限制
                                     if row_id.startswith('FR-F4002'):
                                         focuspoint_limit_info_message = LimitInfoMessage(row_result_dict)
                                         focuspoint_limit_info_message_list.append(focuspoint_limit_info_message)
                                         focuspoint_limit_file_writer.writerow(focuspoint_limit_info_message.to_print_focuspoint_log())
+                                        if not row_result_dict['title'].startswith('life cycle'):
+                                            load_group_message.add_limit_detail(row_result_dict)
+                                    # 智能释放
                                     if row_id.startswith('FR-F4003'):
                                         focuspoint_release_info_message = IntellijReleaseInfoMessage(row_result_dict)
                                         focuspoint_release_info_message_list.append(focuspoint_release_info_message)
                                         focuspoint_release_file_writer.writerow(focuspoint_release_info_message.to_print_focuspoint_log())
+                                        load_group_message.add_release_detail(row_result_dict)
+                                    # 引擎中止
                                     if row_id.startswith('FR-F4004'):
                                         focuspoint_interrupt_info_message = InterruptInfoMessage(row_result_dict)
                                         focuspoint_interrupt_info_message_list.append(focuspoint_interrupt_info_message)
                                         focuspoint_interrupt_file_writer.writerow(focuspoint_interrupt_info_message.to_print_focuspoint_log())
+                                        if 'trigger' in row_result_dict['body'] and row_result_dict['body']['trigger']:
+                                            load_group_message.add_interrupt_detail(row_result_dict)
                                     if row_id.startswith('FR-F5002'):
                                         focuspoint_shutdown_info_message = ShutdownInfoMessage(row_result_dict)
                                         focuspoint_shutdown_info_message_list.append(focuspoint_shutdown_info_message)
@@ -171,7 +182,8 @@ def generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail(focuspoint_p
     focuspoint_wrapper = FocuspointWrapper(focuspoint_limit_info_message_node_list_detail,
                                            focuspoint_release_info_message_node_list_detail,
                                            focuspoint_interrupt_info_message_node_list_detail,
-                                           focuspoint_shutdown_info_message_node_pid_item)
+                                           focuspoint_shutdown_info_message_node_pid_item,
+                                           load_group_message)
     return focuspoint_wrapper
 
 

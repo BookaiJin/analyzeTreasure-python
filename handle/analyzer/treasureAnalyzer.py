@@ -7,6 +7,7 @@ from file.execute import executeTemplate, executeSql
 from file.focusPoint import focusPoint
 from file.gcRecord import gcRecord
 from file.realTimeUsage import realTimeUsage
+from handle.load import loadGroupAnalyzer
 from handle.unavailabletime import unavailableTimeAnalyzer
 
 __author__ = 'bokai'
@@ -123,6 +124,8 @@ def start_analyze(treasure2analyze_path):
 
     end_time = time.time()
     print('analyze total time:', (end_time - start_time) * 1000, 'ms\n')
+
+    loadGroupAnalyzer.analyze_load_detail(focuspoint_wrapper.load_group_message)
 
     print('不可用时长分析')
     unavailable_start_time = time.time()
