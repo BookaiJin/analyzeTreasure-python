@@ -13,7 +13,6 @@ def analyze_load_detail(load_group_message, focuspoint_full_name):
     focuspoint_summary_full_name = focuspoint_full_name + '.summary.json'
     focuspoint_summary_file = open(focuspoint_summary_full_name, 'w')
 
-    # release_rec = load_group_message.release_detail.sort(cmp=None, key="time", reverse=False)
     release_rec = sorted(load_group_message.release_detail,key=lambda e:e.__getitem__('time'))
     interrupt_rec = load_group_message.interrupt_detail
     limit_rec = load_group_message.limit_detail
