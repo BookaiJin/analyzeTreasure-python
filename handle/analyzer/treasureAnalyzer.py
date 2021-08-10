@@ -125,7 +125,7 @@ def start_analyze(treasure2analyze_path):
     end_time = time.time()
     print('analyze total time:', (end_time - start_time) * 1000, 'ms\n')
 
-    loadGroupAnalyzer.analyze_load_detail(focuspoint_wrapper.load_group_message)
+    loadGroupAnalyzer.analyze_load_detail(focuspoint_wrapper.load_group_message, focuspoint_file_full_name)
 
     print('不可用时长分析')
     unavailable_start_time = time.time()
