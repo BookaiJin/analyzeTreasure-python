@@ -51,12 +51,18 @@ def analyze_load_detail(load_group_message, focuspoint_full_name):
             next_release = release_rec[j]
             next_release_time = int(next_release['time'])
 
-        result[current_release['body']['load']]['times'] += 1
+        try:
+            if current_release['body'] != '':
+                result[current_release['body']['load']]['times'] += 1
+        except TypeError as e:
+            # print(e)
+            print(' ', result[current_release['body']['load']]['times'])
         release_detail = [current_release]
         interrupt_detail = []
         limit_detail = []
         detail_one = {"date": current_release['date'], "release_rec": release_detail, "interrupt": interrupt_detail, "limit": limit_detail}
-        result[current_release['body']['load']]['details'].append(detail_one)
+        if current_release['body'] != '':
+            result[current_release['body']['load']]['details'].append(detail_one)
 
         for interrupt in interrupt_rec:
             if current_release_time <= int(interrupt['time']) < next_release_time and int(interrupt['time']) - current_release_time < 10 * 60 * 1000:
@@ -66,12 +72,12 @@ def analyze_load_detail(load_group_message, focuspoint_full_name):
             if current_release_time <= int(limit['time']) < next_release_time and int(limit['time']) - current_release_time < 10 * 60 * 1000:
                 limit_detail.append(limit)
 
-        result[current_release['body']['load']]['interrupt_times'] += len(interrupt_detail)
-        result[current_release['body']['load']]['limit_times'] += len(limit_detail)
+        if current_release['body']!='':
+            result[current_release['body']['load']]['interrupt_times'] += len(interrupt_detail)
+            result[current_release['body']['load']]['limit_times'] += len(limit_detail)
 
         i += 1
         j += 1
 
     content = str(result).replace("'", "\"").replace("True", "\"True\"").replace("False", "\"False\"")
-    print(content)
     focuspoint_summary_file.write(content + '\n')

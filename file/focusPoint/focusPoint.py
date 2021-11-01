@@ -71,7 +71,7 @@ def generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail(focuspoint_p
         for filename in file_names:
             if filename.startswith('focusPoint') and filename.endswith('.csv'):
                 # 打开每个文件
-                focuspoint_csv_file = open(parent + os.sep + filename, 'r')
+                focuspoint_csv_file = open(parent + os.sep + filename, 'r', encoding='UTF-8')
                 reader = csv.reader((line.replace('\0', '') for line in focuspoint_csv_file))
 
                 j = 0

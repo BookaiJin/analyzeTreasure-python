@@ -84,35 +84,36 @@ def start_analyze(treasure2analyze_path):
                 # 解压日压缩包，取出各个需要分析的文件
                 day_unzip = zipfile.ZipFile(parent + os.sep + single_day_zip, 'r')
                 # 读取文件，分focusPoint和gcRecord两类文件解压
-                for dayFile in day_unzip.namelist():
+                for day_file in day_unzip.namelist():
                     # gcRecord文件处理
-                    if dayFile.startswith('gcRecord'):
-                        day_unzip.extract(dayFile, gc_record_files_path)
+                    if day_file.startswith('gcRecord'):
+                        day_unzip.extract(day_file, gc_record_files_path)
 
                     # focuspoint文件处理
-                    if dayFile.startswith('focusPoint'):
-                        day_unzip.extract(dayFile, focuspoint_files_path)
+                    if day_file.startswith('focusPoint'):
+                        day_unzip.extract(day_file, focuspoint_files_path)
 
                     # realTimeUsage文件处理
-                    if dayFile.startswith('realTime'):
-                        day_unzip.extract(dayFile, realtime_usage_files_path)
+                    if day_file.startswith('realTime'):
+                        day_unzip.extract(day_file, realtime_usage_files_path)
 
                     # execute文件处理
-                    if dayFile.startswith('execute') and not dayFile.startswith('executeSql'):
-                        day_unzip.extract(dayFile, execute_files_path)
+                    if day_file.startswith('execute') and not day_file.startswith('executeSql'):
+                        day_unzip.extract(day_file, execute_files_path)
 
                     # executeSql文件处理
-                    if dayFile.startswith('executeSql'):
-                        day_unzip.extract(dayFile, execute_sql_files_path)
+                    if day_file.startswith('executeSql'):
+                        day_unzip.extract(day_file, execute_sql_files_path)
 
-                    dayFile = None
+                    day_file = None
+                day_unzip.close()
 
     unzip_end_time = time.time()
-    print(treasure2analyze_path + 'unzip time:', (unzip_end_time - start_time) * 1000, 'ms')
+    print(treasure2analyze_path + ' unzip time:', (unzip_end_time - start_time) * 1000, 'ms')
 
     # executeSql.generate_execute_sql(company_info, execute_sql_files_path, execute_sql_file_full_name, execute_sql_file_full_cal_name)
-    cal_sql_end_time = time.time()
-    print(treasure2analyze_path + 'cal sql time:', (cal_sql_end_time - start_time) * 1000, 'ms')
+    # cal_sql_end_time = time.time()
+    # print(treasure2analyze_path + ' cal sql time:', (cal_sql_end_time - start_time) * 1000, 'ms')
     # executeTemplate.generate_execute_template(execute_files_path, execute_sql_record_wrapper, execute_file_full_name)
 
     gc_info_message_node_pid_detail = gcRecord.generate_gc_log_and_get_node_pid_gc_info_list_detail(
@@ -127,20 +128,20 @@ def start_analyze(treasure2analyze_path):
 
     loadGroupAnalyzer.analyze_load_detail(focuspoint_wrapper.load_group_message, focuspoint_file_full_name)
 
-    print('不可用时长分析')
-    unavailable_start_time = time.time()
-    unavailableTimeAnalyzer.analyze_unavailable_time(gc_info_message_node_pid_detail, realtime_usage_node_pid_list_detail,
-                                                     focuspoint_wrapper, unavailable_time_file_full_name)
-    unavailable_end_time = time.time()
-    print('unavailable analyze total time:', (unavailable_end_time - unavailable_start_time) * 1000, 'ms')
+    # print('不可用时长分析')
+    # unavailable_start_time = time.time()
+    # unavailableTimeAnalyzer.analyze_unavailable_time(gc_info_message_node_pid_detail, realtime_usage_node_pid_list_detail,
+    #                                                 focuspoint_wrapper, unavailable_time_file_full_name)
+    # unavailable_end_time = time.time()
+    # print('unavailable analyze total time:', (unavailable_end_time - unavailable_start_time) * 1000, 'ms')
 
-    # 删除日压缩包
-    shutil.rmtree(zip_des_result_path)
     shutil.rmtree(execute_files_path)
     shutil.rmtree(execute_sql_files_path)
     shutil.rmtree(focuspoint_files_path)
     shutil.rmtree(gc_record_files_path)
     shutil.rmtree(realtime_usage_files_path)
+    # 删除日压缩包
+    shutil.rmtree(zip_des_result_path)
 
 
 if __name__ == '__main__':
