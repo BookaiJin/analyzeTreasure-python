@@ -126,7 +126,7 @@ def generate_focuspoint_log_and_get_focuspoint_node_pid_list_detail(focuspoint_p
                                     if row_id.startswith('FR-F5003'):
                                         focuspoint_server_info_message = ServerInfoMessage(row_result_dict)
                     except Exception as e:
-                        print("focusPoint row read failed.", filename, 'line:', reader.line_num, e)
+                        print("focusPoint row read failed.", filename, 'focusID:', rows[0],  'line:', reader.line_num, e)
                     finally:
                         j = j + 1
 
