@@ -34,7 +34,7 @@ def generate_gc_log_and_get_node_pid_gc_info_list_detail(gc_log_path, gc_log_ful
         for filename in file_names:
             if filename.startswith('gcRecord') and filename.endswith('.csv'):
                 # 打开每个文件
-                gc_csv_file = open(parent + os.sep + filename, 'r')
+                gc_csv_file = open(parent + os.sep + filename, 'r', encoding='UTF-8')
                 gc_file_reader = csv.DictReader((line.replace('\0', '') for line in gc_csv_file))
                 try:
                     for row in gc_file_reader:

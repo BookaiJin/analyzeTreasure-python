@@ -73,5 +73,5 @@ def analyze_load_detail(load_group_message, focuspoint_full_name):
         j += 1
 
     content = str(result).replace("'", "\"").replace("True", "\"True\"").replace("False", "\"False\"")
-    print(content)
+    # print(content)
     focuspoint_summary_file.write(content + '\n')
